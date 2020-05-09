@@ -216,7 +216,7 @@ tibble(values = round(table(df$algo_app)/dim(df)[1],2),
   theme(plot.title = element_text(hjust = 0.5)) +
   scale_y_continuous(labels = scales::percent) +
   labs(x = "", y="", title = "Dependent Variable: Algorithmic Appreciation") 
-ggsave("../../report/figures/Distributions_DV_US.png", width=8, height=8, dpi=900)
+ggsave("../../report/figures/Distributions_DV_US.png", width=8, height=4, dpi=900)
 ```
 ![Figure](../../report/figures/Distributions_DV_US.png)
 
