@@ -135,7 +135,71 @@ tibble(Scale = c("News Usage", "Trust in Media", "Political Efficacy"),
 Tidy Data
 -------
 ``` r
-
+# Mutate data
+df <-  df %>%
+  mutate(news = round((rename1(df$Q20_1) + rename1(df$Q20_2) + rename1(df$Q20_3) +
+                         rename1(df$Q20_4) + rename1(df$Q20_5))/5, digits = 0),
+         hs = round(rename2(df$Q1_1) + rename2(df$Q1_2) + rename2(df$Q1_3) +
+                      rename2(df$Q1_4)/4, digits = 0),
+         surv = round((rename2(df$Q1_5) + rename2(df$Q1_6) + rename2(df$Q1_7) + 
+                         rename2(df$Q1_8) + rename2(df$Q1_9) + rename2(df$Q1_10) +
+                         rename2(df$Q1_11))/7, digits = 0),
+         esc = round((rename2(df$Q1_12) + rename2(df$Q1_13) + rename2(df$Q1_14) + 
+                        rename2(df$Q1_15) + rename2(df$Q1_16))/5, digits = 0),
+         pt = round((rename2(df$Q1_17) + rename2(df$Q1_18) + rename2(df$Q1_19) + 
+                       rename2(df$Q1_20) + rename2(df$Q1_21))/5, digits = 0),
+         ent = round((rename2(df$Q1_22) + rename2(df$Q1_23))/2, digits = 0),
+         algo_app = (rename3(df$Q3_1) + rename3(df$Q4_1) + rename3(df$Q6_1) +
+                       rename3(df$Q8_1)),
+         trust = round((rename2(df$Q23_1) + rename2(df$Q23_2) + rename2(df$Q23_3) +
+                        rename2(df$Q23_4) + rename2(df$Q23_5) + rename2(df$Q23_6) +
+                        rename2(df$Q23_7) + rename2(df$Q23_8) + rename2(df$Q23_9))/9, 
+                       digits = 0),
+         polef = round((rename2(df$Q23_1.1) + rename2(df$Q23_2.1) + rename2(df$Q23_3.1))/3, 
+                       digits = 0),
+         Q11 = str_to_lower(Q11, locale = "en"),
+         Q11 = ifelse(Q11 == "second", 1,
+               ifelse(Q11 == "second place", 1,
+               ifelse(Q11 == "2", 1,
+               ifelse(Q11 == "2nd", 1,
+               ifelse(Q11 == "second place. if you guessed first place, the person in first place is still there.",
+                       1, 0))))),
+         Q12 = ifelse(Q12 == "8", 1, 0),
+         Q14 = str_to_lower(Q14),
+         Q14 = ifelse(Q14 == "emily", 1,
+               ifelse(Q14 == "emily april may", 1, 0)),
+         Q15 = str_to_lower(Q15),
+         Q15 = ifelse(Q15 == "0", 1,
+               ifelse(Q15 == "0 cubic feet", 1,
+               ifelse(Q15 == "none", 1,
+               ifelse(Q15 == "zero", 1,
+               ifelse(Q15 == "there is no dirt in a hole", 1,
+               ifelse(Q15 == "there's no dirt in a hole", 1, 0)))))),     
+         Q16 = ifelse(Q16 == ".05", 1,
+               ifelse(Q16 == "$0.05", 1,
+               ifelse(Q16 == "0.05", 1,
+               ifelse(Q16 == "05", 1,
+               ifelse(Q16 == "5", 1,
+               ifelse(Q16 == "5 cents", 1, 0)))))),
+         Q17 = str_to_lower(Q17),
+         Q17 = str_replace(df$Q17, "5", "1"),
+         Q17 = ifelse(Q17 == "1", 1, 0),
+         Q18 = str_to_lower(Q18),
+         Q18 = str_replace(df$Q18, "47", "1"),
+         Q18 = ifelse(Q18 == "1", 1, 0),
+         correct = (Q11 + Q12 + Q14 + Q15 + Q16 + Q17 + Q18),
+         eo = Q19 - correct,
+         pid = Q31,
+         pid = recode(Q31, "Independent"= "Other", "Something Else" = "Other"),
+         pid =factor(pid, levels = c("Other", "Democrat", "Republican")),
+         gender = Q37,
+         gender = recode(Q37, "Transgender Female" = "Female"),
+         gender = na_if(gender, "Prefer not to answer"),
+         gender = factor(gender, levels = c("Female", "Male")),
+         age = (2019 - Q39)
+         ) %>%
+  select(ResponseId, news, hs, surv, esc, pt, ent, 
+         algo_app, trust, polef, eo, pid, gender, age)
 ```
 
 Dependent Variable
