@@ -10,6 +10,7 @@ Content
 
 -   [Setup](#setup)
 -   [Data](#data)
+    -   [Scalability](#Scalability)
     -   [Tidy Data](#Tidy-Data)
     -   [Dependent Variable](#Dependent-Variable)
     -   [Independent Variable](#Independent-Variable)
@@ -25,7 +26,6 @@ Load the required packages and source the auxiliary functions from `src/lib/func
 ``` r
 source("src/lib/functions.R")
 ```
-
 Data
 ====
 -  Requires access to the csv file prepared by MTurk. 
@@ -35,6 +35,102 @@ Data
 ``` r
 df <- read_sav("../../data/raw-private-encrypted/MTURK_US.csv")
 ```
+
+Scalability
+------------
+* The gratifications of the news is constructed as an additive scale using a Principal Components Factor Analysis using varimax rotation, similar to Diddi and LaRose (2006), PAP p.9.
+
+```r
+# Check Scalability of Uses and Gratifications of the News
+hs <- df[c("Q1_1", "Q1_2", "Q1_3", "Q1_4", "Q1_5")]
+cols <- c(1:5)
+hs[,cols] = apply(hs[,cols], 2, function(x) as.numeric(as.character(x)));
+hs <- hs[complete.cases(hs), ]
+fac_hs <- psych::fa(hs, rotate="varimax", fm="pa", scores="Bartlett")
+
+surv <- df[c("Q1_5", "Q1_6", "Q1_7", "Q1_8", "Q1_9", "Q1_10", "Q1_11")]
+cols <- c(1:7)
+surv[,cols] = apply(surv[,cols], 2, function(x) as.numeric(as.character(x)));
+surv <- surv[complete.cases(surv), ]
+fac_surv <- psych::fa(surv, rotate="varimax", fm="pa", scores="Bartlett")
+
+esc <- df[c("Q1_12", "Q1_13", "Q1_14", "Q1_15", "Q1_16")]
+cols <- c(1:5)
+esc[,cols] = apply(esc[,cols], 2, function(x) as.numeric(as.character(x)));
+esc <- esc[complete.cases(esc), ]
+fac_esc <- psych::fa(esc, rotate="varimax", fm="pa", scores="Bartlett")
+
+pt <- df[c("Q1_17", "Q1_18", "Q1_19", "Q1_20", "Q1_21")]
+cols <- c(1:5)
+pt[,cols] = apply(pt[,cols], 2, function(x) as.numeric(as.character(x)));
+pt <- pt[complete.cases(pt), ]
+fac_pt <- psych::fa(pt, rotate="varimax", fm="pa", scores="Bartlett")
+
+ent <- df[c("Q1_22", "Q1_23")]
+cols <- c(1:2)
+ent[,cols] = apply(ent[,cols], 2, function(x) as.numeric(as.character(x)));
+ent <- ent[complete.cases(ent), ]
+fac_ent <- psych::fa(ent, rotate="varimax", fm="pa", scores="Bartlett")
+
+tibble(Scale = c("Habit Strengt", "Surveillance", "Escapism","Passing Time", "Entertainment"),
+       `Chi Square` = c(fac_hs[3]$chi, fac_surv[3]$chi, fac_esc[3]$chi, fac_pt[3]$chi, fac_ent[3]$chi),
+       Fit = c(fac_hs[10]$fit, fac_surv[10]$fit, fac_esc[10]$fit, fac_pt[10]$fit, fac_ent[10]$fit),
+       PA = c(fac_hs[29]$R2, fac_surv[29]$R2, fac_esc[29]$R2, fac_pt[29]$R2, fac_ent[27]$R2))
+```
+
+|  Scale		 | Chi Square |	Fit 		  | PA		|
+|-------------------- | --------------- | ---------------- | ----------------- |
+| Habit Strengt 	| 6.04	     | 0.811 		  | 0.825		|
+| Surveillance	| 24.5	     | 0.789 	  | 0.851 		|
+| Escapism	| 9.39	     | 0.742 	  | 0.826		|
+| Passing Time	| 22.8 	     | 0.807 	  | 0.874		|
+| Entertainment	| 0.0000857   | 0.785 	  | 0.652		|
+
+- Variables created with an additive scale:
+	- News Consumption
+	- Trust in News
+	- Political Efficacy
+```r
+#Scalability of Controls
+news <- df %>%
+  select(Q20_1:Q20_5) %>%
+  mutate(Q20_1 = rename1(df$Q20_1),
+         Q20_2 = rename1(df$Q20_2),
+         Q20_3 = rename1(df$Q20_3),
+         Q20_4 = rename1(df$Q20_4),
+         Q20_5 = rename1(df$Q20_5))
+news <- news[complete.cases(news), ]
+news <- psy::cronbach(news)#alpha of 0.71 
+
+trust <- df %>%
+  select(Q23_1:Q23_9) %>%
+  mutate(Q23_1 = rename2(df$Q23_1),
+         Q23_2 = rename2(df$Q23_2),
+         Q23_3 = rename2(df$Q23_3),
+         Q23_4 = rename2(df$Q23_4),
+         Q23_5 = rename2(df$Q23_5),
+         Q23_6 = rename2(df$Q23_6),
+         Q23_7 = rename2(df$Q23_7),
+         Q23_8 = rename2(df$Q23_8),
+         Q23_9 = rename2(df$Q23_9))
+trust <- trust[complete.cases(trust), ]
+trust <- psy::cronbach(trust)#alpha of 0.85 
+
+polef <- df %>%
+  select(Q23_1.1:Q23_3.1) %>%
+  mutate(Q23_1.1 = rename2(df$Q23_1.1),
+         Q23_2.1 = rename2(df$Q23_2.1),
+         Q23_3.1 = rename2(df$Q23_3.1))
+polef <- polef[complete.cases(polef), ]
+polef <- psy::cronbach(polef)#alpha of 0.85 
+
+tibble(Scale = c("News Usage", "Trust in Media", "Political Efficacy"),
+       `Cronbach's Alpha` = c(news[3]$alpha, trust[3]$alpha,polef[3]$alpha))
+```
+
+| Scale			| Cronbach's Alpha	|
+| -------------------------- | ------------------------- |
+| News Usage		| 0.707			|| Trust in Media		| 0.846			|| Political Efficacy	| 0.361			|
 
 Tidy Data
 -------

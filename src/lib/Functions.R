@@ -1,6 +1,8 @@
 library(tidyverse)
 library(sjPlot)
 library(sjmisc)
+library(psy)
+library(psych)
 
 qualtrics <- function(df){
   tmp <- read_csv(df, skip = 3, col_names = F)
