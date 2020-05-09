@@ -250,12 +250,13 @@ rbind(tibble(freq = round(table(df$hs)/dim(df)[1],2),
   geom_col(fill = "gray85", colour = "black") +
   theme_classic() + 
   theme(plot.title = element_text(hjust = 0.5)) +
-  facet_grid(.~id) +
+  facet_wrap(~ id, ncol = 3) +
   scale_y_continuous(labels = scales::percent) +
   scale_x_continuous(breaks = 1:7) +
   labs(x = "", y="", title = "Independent Variable: Gratifications of the News") 
-ggsave("../../report/figures/Distributions_IV_US.png", width=10, height=4, dpi=900)
+ggsave("../../report/figures/Distributions_IV_US.png", width=8, height=6, dpi=900)
 ```
+
 ![Figure](../../report/figures/Distributions_IV_US.png)
 
 
