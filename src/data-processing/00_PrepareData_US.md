@@ -208,9 +208,17 @@ Dependent Variable
 
  ``` r
 # Dependent Variable
-
+tibble(values = round(table(df$algo_app)/dim(df)[1],2),
+       algo_app = 0:4) %>%
+  ggplot(aes(x = algo_app, y = values)) +
+  geom_col(fill = "gray85", colour = "black") +
+  theme_classic() + 
+  theme(plot.title = element_text(hjust = 0.5)) +
+  scale_y_continuous(labels = scales::percent) +
+  labs(x = "", y="", title = "Dependent Variable: Algorithmic Appreciation") 
+ggsave("../../report/figures/Distributions_DV_US.png", width=8, height=8, dpi=900)
 ```
-![Figure](../../report/figures/Distributions_DV_experiment2.png)
+![Figure](../../report/figures/Distributions_DV_US.png)
 
 Independent Variable
 -------
