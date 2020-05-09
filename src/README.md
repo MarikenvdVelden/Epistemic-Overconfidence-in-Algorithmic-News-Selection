@@ -1,6 +1,5 @@
-This folder should contain the scripts that processes the data  before actual analysis.
+This folder should contain the scripts that:
 
-# Scripts
-
-- [US Sample](data-processing/00_PrepareData_US.md) Cleans and constructs measures according to PAP (pp. 10--13, 18) for the US MTurk Sample.
-- [Dutch Sample](data-processing/00_PrepareData_NL.md) Cleans and constructs measures according to PAP (pp. 13--18) for the Dutch PollFish Sample.
+- [Load the required packages and source the auxiliary functions](lib/Functions.R)
+- [Processes the data before actual analysis](data-processing/README.md)
+- [Conduct the actual analysis](analysis/README.md)
