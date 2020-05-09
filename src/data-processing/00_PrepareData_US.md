@@ -13,7 +13,7 @@ Content
     -   [Scalability](#Scalability)
     -   [Tidy Data](#Tidy-Data)
     -   [Dependent Variable](#Dependent-Variable)
-    -   [Independent Variable](#Independent-Variable)
+    -   [Independent Variables](#Independent-Variables)
     -   [Moderator](#Moderator)
     -   [Control Variables](#Control-Variables)
 - [Missing Data](#Missing-Data)
@@ -223,20 +223,61 @@ ggsave("../../report/figures/Distributions_DV_US.png", width=8, height=4, dpi=90
 Independent Variable
 -------
 - Gratifications of the News (**H1**) 
+	- Entertainment
+	- Escapisme
+	- Habit Strength
+	- Passing Time
+	- Surveillance
 
  ``` r
-# Independent Variable
+# Independent Variables
+rbind(tibble(freq = round(table(df$hs)/dim(df)[1],2),
+             values = 1:7,
+             id = "Habit Strength"), 
+      tibble(freq = round(table(df$surv)/dim(df)[1],2),
+             values = 1:7,
+             id = "Surveillance"),
+      tibble(freq = round(table(df$esc)/dim(df)[1],2),
+             values = 1:7,
+             id = "Escapism"),
+      tibble(freq = round(table(df$pt)/dim(df)[1],2),
+             values = 1:7,
+             id = "Passing Time"),
+      tibble(freq = round(table(df$ent)/dim(df)[1],2),
+             values = 1:7,
+             id = "Entertainment")) %>%
+  ggplot(aes(x = values, y = freq)) +
+  geom_col(fill = "gray85", colour = "black") +
+  theme_classic() + 
+  theme(plot.title = element_text(hjust = 0.5)) +
+  facet_grid(.~id) +
+  scale_y_continuous(labels = scales::percent) +
+  scale_x_continuous(breaks = 1:7) +
+  labs(x = "", y="", title = "Independent Variable: Gratifications of the News") 
+ggsave("../../report/figures/Distributions_IV_US.png", width=10, height=4, dpi=900)
 ```
+![Figure](../../report/figures/Distributions_IV_US.png)
+
 
 Moderator
 -------
 - Epistemic Overconfidence (**H2**) 
 
  ``` r
-# Moderator 
+#Moderator
+tibble(values = round(table(df$eo)/dim(df)[1],2),
+       eo = c(-6,-3:7)) %>%
+  ggplot(aes(x = eo, y = values)) +
+  geom_bar(stat = "identity", fill = "gray85", colour = "black") +
+  theme_classic() + 
+  theme(plot.title = element_text(hjust = 0.5)) +
+  scale_y_continuous(labels = scales::percent) +
+  scale_x_continuous(breaks = -6:7) +
+  labs(x = "", y="", title = "Moderator: Epistemic Overconfidence") 
+ggsave("../../report/figures/Distributions_Moderator_US.png", width=8, height=4, dpi=900)
 ```
 
-
+![Figure](../../report/figures/Distributions_Moderator_US.png)
 
 
 Control Variables
