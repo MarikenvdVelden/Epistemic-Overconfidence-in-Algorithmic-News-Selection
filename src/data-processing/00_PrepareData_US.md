@@ -2,8 +2,8 @@ Prepare Data of US MTurk Sample
 ================
 
 - DESCRIPTION: Clean and construct measures according to PAP (pp. 3--8)
-- CREATES: [Cleaned Data for US Sample](data/intermediate/cleaned_us.csv)
--  DEPENDS: [Raw Data from MTurk](data/raw-private-encrypted/US_MTURK.csv)
+- CREATES: [Cleaned Data for US Sample](../../data/intermediate/cleaned_us.csv)
+-  DEPENDS: [Raw Data from MTurk](../../data/raw-private-encrypted/US_MTURK.csv)
 
 Content
 ======
@@ -29,11 +29,11 @@ source("src/lib/functions.R")
 Data
 ====
 -  Requires access to the csv file prepared by MTurk. 
--  [Cleaned data](data/intermediate/cleaned_us.csv) and [codings](src/data-processing) are saved to public folders. 
+-  [Cleaned data](../../data/intermediate/cleaned_us.csv) and [codings](src/data-processing) are saved to public folders. 
 
 
 ``` r
-df <- read_sav("data/raw-private-encrypted/MTURK_US.csv")
+df <- read_sav("../../data/raw-private-encrypted/MTURK_US.csv")
 ```
 
 Tidy Data
@@ -136,7 +136,7 @@ We employ the following criteria:
  ```r
  #save data
  
- write_csv(df, "data/intermediate/cleaned_US.csv")         
+ write_csv(df, "../../data/intermediate/cleaned_US.csv")         
 
  ```
  
