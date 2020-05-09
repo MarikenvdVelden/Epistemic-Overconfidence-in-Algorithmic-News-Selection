@@ -100,7 +100,7 @@ news <- df %>%
          Q20_4 = rename1(df$Q20_4),
          Q20_5 = rename1(df$Q20_5))
 news <- news[complete.cases(news), ]
-news <- psy::cronbach(news)#alpha of 0.71 
+news <- psy::cronbach(news)
 
 trust <- df %>%
   select(Q23_1:Q23_9) %>%
@@ -114,7 +114,7 @@ trust <- df %>%
          Q23_8 = rename2(df$Q23_8),
          Q23_9 = rename2(df$Q23_9))
 trust <- trust[complete.cases(trust), ]
-trust <- psy::cronbach(trust)#alpha of 0.85 
+trust <- psy::cronbach(trust)
 
 polef <- df %>%
   select(Q23_1.1:Q23_3.1) %>%
@@ -122,7 +122,7 @@ polef <- df %>%
          Q23_2.1 = rename2(df$Q23_2.1),
          Q23_3.1 = rename2(df$Q23_3.1))
 polef <- polef[complete.cases(polef), ]
-polef <- psy::cronbach(polef)#alpha of 0.85 
+polef <- psy::cronbach(polef)
 
 tibble(Scale = c("News Usage", "Trust in Media", "Political Efficacy"),
        `Cronbach's Alpha` = c(news[3]$alpha, trust[3]$alpha,polef[3]$alpha))
