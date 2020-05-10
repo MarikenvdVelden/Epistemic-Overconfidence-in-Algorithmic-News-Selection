@@ -159,5 +159,102 @@ f2_5 <- H2_5  %>%
 ### Predicted Effects
 
 ```r
-#Placeholder
+#H2 Interaction Effect for Different Levels of Epistemic Overconfidence
+eo.labs <- c("Epistemic Overconfidence \n 1st Quantile", 
+             "Epistemic Overconfidence \n 2nd Quantile", 
+             "Epistemic Overconfidence \n 3rd Quantile")
+names(eo.labs) <- c("0.2", "2.4", "4.7")
+
+tmp <- tibble(freq = table(df$esc),
+             values = 1:7)
+esc <- ggeffects::ggpredict(H2_1, terms = c("esc","eo")) %>%
+  ggplot(aes(x, predicted)) + 
+  facet_grid(cols = vars(group),
+             labeller = labeller(group = eo.labs)) +
+  geom_line(aes(linetype=group)) +
+  geom_ribbon(aes(ymin=conf.low, ymax=conf.high, fill = group), alpha=0.15) +
+  scale_fill_manual(values = c("gray85","gray85","gray85")) +
+  scale_linetype_manual(values = c("solid", "dashed", "dotted")) +
+  scale_x_continuous(breaks = 1:7) +
+  theme_classic() +
+  labs(x = "Escapism", y = "Predicted Values") +
+  theme(legend.title=element_blank()) +
+  theme(legend.position="none") +
+  geom_bar(data = tmp, aes(x=values, y=freq/400), stat = "identity",
+           fill="white", colour = "gray80") 
+
+tmp <- tibble(freq = table(df$ent),
+              values = 1:7)
+ent <- ggeffects::ggpredict(H2_2, terms = c("ent","eo")) %>%
+  ggplot(aes(x, predicted)) + 
+  facet_grid(cols = vars(group),
+             labeller = labeller(group = eo.labs)) +
+  geom_line(aes(linetype=group)) +
+  geom_ribbon(aes(ymin=conf.low, ymax=conf.high, fill = group), alpha=0.15) +
+  scale_fill_manual(values = c("gray85","gray85","gray85")) +
+  scale_linetype_manual(values = c("solid", "dashed", "dotted")) +
+  scale_x_continuous(breaks = 1:7) +
+  theme_classic() +
+  labs(x = "Entertainment", y = "Predicted Values") +
+  theme(legend.title=element_blank()) +
+  theme(legend.position="none") +
+  geom_bar(data = tmp, aes(x=values, y=freq/400), stat = "identity",
+           fill="white", colour = "gray80") 
+
+tmp <- tibble(freq = table(df$hs),
+              values = 1:7)
+hs <- ggeffects::ggpredict(H2_3, terms = c("hs","eo")) %>%
+  ggplot(aes(x, predicted)) + 
+  facet_grid(cols = vars(group),
+             labeller = labeller(group = eo.labs)) +
+  geom_line(aes(linetype=group)) +
+  geom_ribbon(aes(ymin=conf.low, ymax=conf.high, fill = group), alpha=0.15) +
+  scale_fill_manual(values = c("gray85","gray85","gray85")) +
+  scale_linetype_manual(values = c("solid", "dashed", "dotted")) +
+  scale_x_continuous(breaks = 1:7) +
+  theme_classic() +
+  labs(x = "Habit Strength", y = "Predicted Values") +
+  theme(legend.title=element_blank()) +
+  theme(legend.position="none") +
+  geom_bar(data = tmp, aes(x=values, y=freq/400), stat = "identity",
+           fill="white", colour = "gray80") 
+
+tmp <- tibble(freq = table(df$pt),
+              values = 1:7)
+pt <- ggeffects::ggpredict(H2_4, terms = c("pt","eo")) %>%
+  ggplot(aes(x, predicted)) + 
+  facet_grid(cols = vars(group),
+             labeller = labeller(group = eo.labs)) +
+  geom_line(aes(linetype=group)) +
+  geom_ribbon(aes(ymin=conf.low, ymax=conf.high, fill = group), alpha=0.15) +
+  scale_fill_manual(values = c("gray85","gray85","gray85")) +
+  scale_linetype_manual(values = c("solid", "dashed", "dotted")) +
+  scale_x_continuous(breaks = 1:7) +
+  theme_classic() +
+  labs(x = "Passing Time", y = "Predicted Values") +
+  theme(legend.title=element_blank()) +
+  theme(legend.position="none") +
+  geom_bar(data = tmp, aes(x=values, y=freq/400), stat = "identity",
+           fill="white", colour = "gray80") 
+
+tmp <- tibble(freq = table(df$surv),
+              values = 1:7)
+surv <- ggeffects::ggpredict(H2_5, terms = c("surv","eo")) %>%
+  ggplot(aes(x, predicted)) + 
+  facet_grid(cols = vars(group),
+             labeller = labeller(group = eo.labs)) +
+  geom_line(aes(linetype=group)) +
+  geom_ribbon(aes(ymin=conf.low, ymax=conf.high, fill = group), alpha=0.15) +
+  scale_fill_manual(values = c("gray85","gray85","gray85")) +
+  scale_linetype_manual(values = c("solid", "dashed", "dotted")) +
+  scale_x_continuous(breaks = 1:7) +
+  theme_classic() +
+  labs(x = "Surveillance", y = "Predicted Values") +
+  theme(legend.title=element_blank()) +
+  theme(legend.position="none") +
+  geom_bar(data = tmp, aes(x=values, y=freq/400), stat = "identity",
+           fill="white", colour = "gray80") 
+ggplot2.multiplot(ent, esc, hs, pt, surv, cols=1)
 ```
+
+![Figure](../../report/figures/H2_pred_US.png)

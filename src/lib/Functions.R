@@ -6,7 +6,8 @@ library(psych)
 library(ggstatsplot)
 library(broom)
 library(tidybayes)
-
+library(brms)
+library(easyGgplot2)
 
 qualtrics <- function(df){
   tmp <- read_csv(df, skip = 3, col_names = F)
