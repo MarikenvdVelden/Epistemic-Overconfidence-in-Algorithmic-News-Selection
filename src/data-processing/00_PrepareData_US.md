@@ -130,7 +130,9 @@ tibble(Scale = c("News Usage", "Trust in Media", "Political Efficacy"),
 
 | Scale			| Cronbach's Alpha	|
 | -------------------------- | ------------------------- |
-| News Usage		| 0.707			|| Trust in Media		| 0.846			|| Political Efficacy	| 0.361			|
+| News Usage		| 0.707			|
+| Trust in Media		| 0.846			|
+| Political Efficacy	| 0.361			|
 
 Tidy Data
 -------
@@ -249,7 +251,7 @@ ggsave("../../report/figures/Distributions_DV_US.png", width=8, height=4, dpi=90
 
 ![Figure](../../report/figures/Distributions_DV_US.png)
 
-Independent Variable
+Independent Variables
 -------
 - Gratifications of the News (**H1**) 
 	- Entertainment
@@ -393,8 +395,19 @@ tibble(Covariate = c("Algorithmic Appreciation", "UGT: Entertainment",
 
 | Covariate 					| Percentage	|
 |------------------------------------------------|---------------------|
-| Algorithmic Appreciation			| 0			|   | UGT: Entertainment            		| 0			|| UGT: Escapism                  		| 0			|   | UGT: Habit Strength            		| 0			|   | UGT: Passing Time              		| 0   			|| UGT: Surveillance              		| 0   			|| Epistemic Overconfidence       	| 0.04		|| Age                            			| 0.07		|| Gender                         			| 0.07		|
-| News Usage                     		| 0   			|| Party ID                       			| 0.07		|| Political Efficacy             			| 0   			|| Trust in Media                 			| 0			|
+| Algorithmic Appreciation			| 0			|   
+| UGT: Entertainment            		| 0			|
+| UGT: Escapism                  		| 0			|   
+| UGT: Habit Strength            		| 0			|   
+| UGT: Passing Time              		| 0   			|
+| UGT: Surveillance              		| 0   			|
+| Epistemic Overconfidence       	| 0.04		|
+| Age                            			| 0.07		|
+| Gender                         			| 0.07		|
+| News Usage                     		| 0   			|
+| Party ID                       			| 0.07		|
+| Political Efficacy             			| 0   			|
+| Trust in Media                 			| 0			|
   
  We recode the missing values of the variables `Epistemic Overconfidence`, `Age`, `Gender`, and `Party ID` to the mean value of the respective variables.
 
