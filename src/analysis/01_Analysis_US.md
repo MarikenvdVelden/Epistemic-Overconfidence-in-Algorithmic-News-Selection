@@ -142,6 +142,17 @@ f2_5 <- H2_5  %>%
                        "Age","Gender: Male", " Interaction"),
          id = rep("Surveillance", 14)) %>%
   select(-term)
+  
+ rbind(f2_1, f2_2, f2_3, f2_4, f2_5) %>%
+  ggplot(aes(y = variable)) +
+  facet_wrap(~ id, ncol = 2, scales = "free") +
+  stat_dist_halfeyeh(aes(dist = "student_t", arg1 = df.residual(H1), 
+                         arg2 = estimate, arg3 = std.error))  +
+  labs(x = "", y = "") +
+  geom_vline(xintercept = 0, size = .5) +
+  theme_classic() +
+  ggtitle("DV: Algorithmic Appreciation") +
+  theme(plot.title = element_text(hjust = 0.5)) 
  ```
 ![Figure](../../report/figures/H2_coef_US.png)
 
