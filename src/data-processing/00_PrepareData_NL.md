@@ -431,10 +431,10 @@ tibble(Covariate = c("Algorithmic Appreciation", "UGT: Entertainment",
 df <- df %>%
   select(-age_group) %>%
   mutate(ent = tidyr::replace_na(ent, round(mean(df$ent, na.rm=T),0)),
-         esc = tidyr::replace_na(esc, mean(df$esc, na.rm=T)),
-         hs = tidyr::replace_na(hs, mean(df$hs, na.rm=T)),
-         pt = tidyr::replace_na(pt, mean(df$pt, na.rm=T)),
-         surv = tidyr::replace_na(surv, mean(df$surv, na.rm=T)),
+         esc = tidyr::replace_na(esc, round(mean(df$esc, na.rm=T),0)),
+         hs = tidyr::replace_na(hs, round(mean(df$hs, na.rm=T),0)),
+         pt = tidyr::replace_na(pt, round(mean(df$pt, na.rm=T),0)),
+         surv = tidyr::replace_na(surv, round(mean(df$surv, na.rm=T),0)),
          gender = tidyr::replace_na(gender, "Male"))
 ``` 
  We recode the missing values of the variable `Epistemic Overconfidence` to 0 and include the variable `Missing_eo` to the data, indicating whether the response on the covariate was missing (value of 1) or not (value of 0).
