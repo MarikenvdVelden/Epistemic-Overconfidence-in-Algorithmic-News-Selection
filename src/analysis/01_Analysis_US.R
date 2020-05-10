@@ -1,6 +1,32 @@
-m1 <- lm(algo_app ~ hs + surv + esc + pt + ent + 
-           eo_factor + trust + news + polef + as.factor(pid) +
-            as.factor(gender) + age, data = d)
+# Analysis
+source("../lib/functions.R")
+
+df <- read_csv("../../data/intermediate/cleaned_US.csv")
+
+covs <- c("UGT: Escapism","UGT: Entertainment", "UGT: Habit Strenght",
+          "UGT: Passing Time", "UGT: Surveillance", "Epistemic Overconfidence",
+          "News Usage", "PID: Other", "PID: Republicans",
+          "Political Efficacy", "Trust in Media",
+          "Age","Gender: Male")
+
+H1 <- lm(algo_app ~ esc + ent + hs + pt + surv +
+           eo + news + factor(pid) + polef + trust + age +
+            factor(gender),  data = df)
+H1  %>%
+  broom::tidy() %>%
+  filter(term != "(Intercept)") %>%
+  mutate(variable =  covs) %>%
+  select(-term) %>%
+  ggplot(aes(y = variable)) +
+  stat_dist_halfeyeh(aes(dist = "student_t", arg1 = df.residual(H1), 
+                         arg2 = estimate, arg3 = std.error))  +
+  labs(x = "", y = "") +
+  geom_vline(xintercept = 0, size = .5) +
+  theme_bw() +
+  ggtitle("DV: Algorithmic Appreciation") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+
 m2 <- lm(algo_app ~ hs*eo_factor + surv + esc + pt + ent + 
              trust + news + polef + as.factor(pid) +
             as.factor(gender) + age, data = d)

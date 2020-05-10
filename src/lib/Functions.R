@@ -5,6 +5,7 @@ library(psy)
 library(psych)
 library(ggstatsplot)
 library(broom)
+library(tidybayes)
 
 
 qualtrics <- function(df){
