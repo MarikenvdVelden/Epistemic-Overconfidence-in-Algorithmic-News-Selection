@@ -70,6 +70,7 @@ This hypothesis test the interaction effect of epistemic overconfidence and grat
 Using an OLS regression, we add an interaction effect between  `epistemic overconfidence` and the `gratifications on the news` to the above described OLS model.
 We expect more algorithmic appreciations for the gratification `surveillance` for those with high values on the epistemic overconfidence measure - signaled by a positive and statistically significant coefficient for the interaction term.
 
+### Coefficient Plots
 ```r
 #H2 Interaction Effect Epistemic Overconfidence
 H2_1 <-  lm(algo_app ~ esc *eo + ent + hs + pt + surv +
@@ -142,6 +143,10 @@ f2_5 <- H2_5  %>%
          id = rep("Surveillance", 14)) %>%
   select(-term)
  ```
- 
- 
-![Figure](../../report/figures/H7_withcontrols.png)
+![Figure](../../report/figures/H2_coef_US.png)
+
+### Predicted Effects
+
+```r
+#Placeholder
+```
