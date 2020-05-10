@@ -10,5 +10,5 @@ The following data files might be of interest:
 See the scripts in [src/data-processing](src/README.md) for details on how these files were constructed.
 
 # Results
-* [US Sample](src/analysis/us.md)
-* [Dutch Sample](src/analysis/nl.md)
+* [US Sample](src/analysis/Analysis_US.md)
+* [Dutch Sample](src/analysis/Analysis_NL.md)
