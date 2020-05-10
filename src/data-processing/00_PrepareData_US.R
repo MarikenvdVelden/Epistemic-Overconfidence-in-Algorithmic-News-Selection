@@ -85,8 +85,8 @@ tibble(Scale = c("News Usage", "Trust in Media", "Political Efficacy"),
 df <-  df %>%
   mutate(news = round((rename1(df$Q20_1) + rename1(df$Q20_2) + rename1(df$Q20_3) +
                          rename1(df$Q20_4) + rename1(df$Q20_5))/5, digits = 0),
-         hs = round(rename2(df$Q1_1) + rename2(df$Q1_2) + rename2(df$Q1_3) +
-                      rename2(df$Q1_4)/4, digits = 0),
+         hs = round((rename2(df$Q1_1) + rename2(df$Q1_2) + rename2(df$Q1_3) +
+                      rename2(df$Q1_4))/4, digits = 0),
          surv = round((rename2(df$Q1_5) + rename2(df$Q1_6) + rename2(df$Q1_7) + 
                          rename2(df$Q1_8) + rename2(df$Q1_9) + rename2(df$Q1_10) +
                          rename2(df$Q1_11))/7, digits = 0),
@@ -137,7 +137,7 @@ df <-  df %>%
          eo = Q19 - correct,
          pid = Q31,
          pid = recode(Q31, "Independent"= "Other", "Something Else" = "Other"),
-         pid =factor(pid, levels = c("Other", "Democrat", "Republican")),
+         pid = factor(pid, levels = c("Other", "Democrat", "Republican")),
          gender = Q37,
          gender = recode(Q37, "Transgender Female" = "Female"),
          gender = na_if(gender, "Prefer not to answer"),
@@ -146,6 +146,30 @@ df <-  df %>%
          ) %>%
   select(ResponseId, news, hs, surv, esc, pt, ent, 
          algo_app, trust, polef, eo, pid, gender, age)
+
+#Check Correlations
+# as a default this function outputs a correlation matrix plot
+df%>%
+  select(algo_app, hs, surv, esc, ent, pt, eo) %>%
+  ggstatsplot::ggcorrmat(
+    type = "robust", # correlation method
+    sig.level = 0.05, # threshold of significance
+    p.adjust.method = "holm", # p-value adjustment method for multiple comparisons
+    cor.vars = c(algo_app:eo), # a range of variables can be selected
+    cor.vars.names = c(
+      "Algorithmic Appreciation", # variable names
+      "Habit Strength",
+      "Surveillance",
+      "Escapism",
+      "Entertainment",
+      "Passing Time",
+      "Epistemic Overconfidence"
+    ),
+    matrix.type = "upper", # type of visualization matrix
+    colors = c("#B2182B", "white", "darkgreen"),
+    title = "Correlalogram for Variables under Study",
+  )
+
 
 ##  Dependent Variable
 tibble(values = round(table(df$algo_app)/dim(df)[1],2),
@@ -157,3 +181,72 @@ tibble(values = round(table(df$algo_app)/dim(df)[1],2),
   scale_y_continuous(labels = scales::percent) +
   labs(x = "", y="", title = "Dependent Variable: Algorithmic Appreciation") 
 ggsave("../../report/figures/Distributions_DV_US.png", width=8, height=4, dpi=900)
+
+
+##  Independent Variables
+rbind(tibble(freq = round(table(df$hs)/dim(df)[1],2),
+             values = 1:7,
+             id = "Habit Strength"), 
+      tibble(freq = round(table(df$surv)/dim(df)[1],2),
+             values = 1:7,
+             id = "Surveillance"),
+      tibble(freq = round(table(df$esc)/dim(df)[1],2),
+             values = 1:7,
+             id = "Escapism"),
+      tibble(freq = round(table(df$pt)/dim(df)[1],2),
+             values = 1:7,
+             id = "Passing Time"),
+      tibble(freq = round(table(df$ent)/dim(df)[1],2),
+             values = 1:7,
+             id = "Entertainment")) %>%
+  ggplot(aes(x = values, y = freq)) +
+  geom_col(fill = "gray85", colour = "black") +
+  theme_classic() + 
+  theme(plot.title = element_text(hjust = 0.5)) +
+  facet_wrap(~ id, ncol = 3) +
+  scale_y_continuous(labels = scales::percent) +
+  scale_x_continuous(breaks = 1:7) +
+  labs(x = "", y="", title = "Independent Variable: Gratifications of the News") 
+ggsave("../../report/figures/Distributions_IV_US.png", width=8, height=6, dpi=900)
+
+#Moderator
+tibble(values = round(table(df$eo)/dim(df)[1],2),
+       eo = c(-6,-3:7)) %>%
+  ggplot(aes(x = eo, y = values)) +
+  geom_bar(stat = "identity", fill = "gray85", colour = "black") +
+  theme_classic() + 
+  theme(plot.title = element_text(hjust = 0.5)) +
+  scale_y_continuous(labels = scales::percent) +
+  scale_x_continuous(breaks = -6:7) +
+  labs(x = "", y="", title = "Moderator: Epistemic Overconfidence") 
+ggsave("../../report/figures/Distributions_Moderator_US.png", width=8, height=4, dpi=900)
+
+
+# Controls
+rbind(tibble(freq = round(table(df$trust)/dim(df)[1],2),
+             values = 1:7,
+             id = "Trust in Media"), 
+      tibble(freq = round(table(df$news)/dim(df)[1],2),
+             values = 0:7,
+             id = "News Usage"),
+      tibble(freq = round(table(df$polef)/dim(df)[1],2),
+             values = 1:7,
+             id = "Political Efficacy"),
+      tibble(freq = round(table(df$pid)/dim(df)[1],2),
+             values = levels(df$pid),
+             id = "Party ID"),
+      tibble(freq = round(table(df$gender)/dim(df)[1],2),
+             values = levels(df$gender),
+             id = "Gender"),
+      tibble(freq = round(table(df$age)/dim(df)[1],2),
+             values = c(22:54, 56:62,64:65,67:69,71,73,74),
+             id = "Age")) %>%
+  ggplot(aes(x = values, y = freq)) +
+  facet_wrap(~ id, ncol = 3, scales = "free") +
+  geom_col(fill = "gray85", colour = "black") +
+  theme_classic() + 
+  theme(plot.title = element_text(hjust = 0.5)) +
+  #scale_y_continuous(labels = scales::percent) +
+  #scale_x_continuous(breaks = 1:7) +
+  labs(x = "", y="", title = "Independent Variable: Gratifications of the News") 
+ggsave("../../report/figures/Distributions_IV_US.png", width=8, height=6, dpi=900)

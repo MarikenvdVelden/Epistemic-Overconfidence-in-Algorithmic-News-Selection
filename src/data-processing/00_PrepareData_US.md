@@ -199,8 +199,34 @@ df <-  df %>%
          age = (2019 - Q39)
          ) %>%
   select(ResponseId, news, hs, surv, esc, pt, ent, 
-         algo_app, trust, polef, eo, pid, gender, age)
+         algo_app, trust, polef, eo, pid, gender, age) 
+         
+#Check Correlations between Main Variables
+df%>%
+  select(algo_app, hs, surv, esc, ent, pt, eo) %>%
+  ggstatsplot::ggcorrmat(
+    type = "robust", # correlation method
+    sig.level = 0.05, # threshold of significance
+    p.adjust.method = "holm", # p-value adjustment method for multiple comparisons
+    cor.vars = c(algo_app:eo), # a range of variables can be selected
+    cor.vars.names = c(
+      "Algorithmic Appreciation", # variable names
+      "Habit Strength",
+      "Surveillance",
+      "Escapism",
+      "Entertainment",
+      "Passing Time",
+      "Epistemic Overconfidence"
+    ),
+    matrix.type = "upper", # type of visualization matrix
+    colors = c("#B2182B", "white", "darkgreen"),
+    title = "Correlalogram for Variables under Study",
+  )         
+         
 ```
+![Figure](../../report/figures/Corrplot_US.png)
+
+
 
 Dependent Variable
  -------
