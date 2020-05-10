@@ -369,48 +369,49 @@ We employ the following criteria:
 - If 11\% or more of the values on the dimension are missing, then we re-code the missing values to a constant (for instance 0) and include a dummy variable indicating whether the response on the covariate was missing or not.
 
 ```r
-
+#Check Missing Values
+tibble(Covariate = c("Algorithmic Appreciation", "UGT: Entertainment",
+                     "UGT: Escapism", "UGT: Habit Strength", "UGT: Passing Time", 
+                     "UGT: Surveillance","Epistemic Overconfidence",
+                     "Age","Gender","News Usage",
+                     "Party ID", "Political Efficacy",
+                     "Trust in Media"),
+       Percentage =c(round(sum(is.na(df$algo_app))/prod(dim(df)[1]),2),
+                     round(sum(is.na(df$ent))/prod(dim(df)[1]),2),
+                     round(sum(is.na(df$esc))/prod(dim(df)[1]),2),
+                     round(sum(is.na(df$hs))/prod(dim(df)[1]),2),
+                     round(sum(is.na(df$pt))/prod(dim(df)[1]),2),
+                     round(sum(is.na(df$surv))/prod(dim(df)[1]),2),
+                     round(sum(is.na(df$eo))/prod(dim(df)[1]),2),
+                     round(sum(is.na(df$age))/prod(dim(df)[1]),2),
+                     round(sum(is.na(df$gender))/prod(dim(df)[1]),2),
+                     round(sum(is.na(df$news))/prod(dim(df)[1]),2),
+                     round(sum(is.na(df$pid))/prod(dim(df)[1]),2),
+                     round(sum(is.na(df$polef))/prod(dim(df)[1]),2),
+                     round(sum(is.na(df$trust))/prod(dim(df)[1]),2)))
 ```
 
 | Covariate 					| Percentage	|
 |------------------------------------------------|---------------------|
-| Likeability CDA                 		| 0.06 		|
-| Likeability VVD                 		| 0.05 		|
-| Likeability FvD                  		| 0.1 			|
-| Perceived Extremity CDA 		| 0.06		|
-| Perceived Extremity VVD	 	| 0.06		|
-| Perceived Extremity FvD  		| 0.1 			|
-| Popularity of FvD in Eyes of Others | 0.1			|
-| Treatment                               		| 0   			|
-| Left-Right Self Placement            	| 0.02 		|
-| Left-Right Placement CDA      		| 0.17 		|
-| Left-Right Placement FvD       		| 0.19 		|
-| Left-Right Placement VVD     		| 0.16 		|
-| Turnout                      			| 0   			|
-| Vote Choice               			| 0    			|
-| Gender                    	 		| 0   			|
-| Age                          			| 0   			|
-| Education               				| 0 			|
+| Algorithmic Appreciation			| 0			|   | UGT: Entertainment            		| 0			|| UGT: Escapism                  		| 0			|   | UGT: Habit Strength            		| 0			|   | UGT: Passing Time              		| 0   			|| UGT: Surveillance              		| 0   			|| Epistemic Overconfidence       	| 0.04		|| Age                            			| 0.07		|| Gender                         			| 0.07		|
+| News Usage                     		| 0   			|| Party ID                       			| 0.07		|| Political Efficacy             			| 0   			|| Trust in Media                 			| 0			|
   
- We recode the missing values of the variables XXX to the mean value of the respective variables.
+ We recode the missing values of the variables `Epistemic Overconfidence`, `Age`, `Gender`, and `Party ID` to the mean value of the respective variables.
 
  ```r
 # Change missing values in variables where missings are <10% to mean
-
+df <- df %>%
+  select(-age_group) %>%
+  mutate(eo = tidyr::replace_na(eo, round(mean(df$eo, na.rm=T),0)),
+         age = tidyr::replace_na(age, mean(df$age, na.rm=T)),
+         gender = tidyr::replace_na(gender, "Male"),
+         pid = tidyr::replace_na(pid, "Democrat"))
 ``` 
- 
- We recode the missing values of the variables XXX to XXX and  include the variables XXX to the data, indicating whether the response on the covariate was missing (value of `1`) or not (value of `0`).
- 
- ```r
-# Recode missing values to 5 and add dummies
-
-```  
- 
+  
  Save data to `data/intermediate` and make public.
  
  ```r
  #save data
- 
  write_csv(df, "../../data/intermediate/cleaned_US.csv")         
 
  ```

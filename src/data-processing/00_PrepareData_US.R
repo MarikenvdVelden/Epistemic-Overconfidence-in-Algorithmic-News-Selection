@@ -262,4 +262,34 @@ rbind(tibble(freq = round(table(df$trust)/dim(df)[1],2),
   labs(x = "", y="", title = "Independent Variable: Gratifications of the News") 
 ggsave("../../report/figures/Distributions_Controls_US.png", width=10, height=6, dpi=900)
 
+#Check Missing Values
+tibble(Covariate = c("Algorithmic Appreciation", "UGT: Entertainment",
+                     "UGT: Escapism", "UGT: Habit Strength", "UGT: Passing Time", 
+                     "UGT: Surveillance","Epistemic Overconfidence",
+                     "Age","Gender","News Usage",
+                     "Party ID", "Political Efficacy",
+                     "Trust in Media"),
+       Percentage =c(round(sum(is.na(df$algo_app))/prod(dim(df)[1]),2),
+                     round(sum(is.na(df$ent))/prod(dim(df)[1]),2),
+                     round(sum(is.na(df$esc))/prod(dim(df)[1]),2),
+                     round(sum(is.na(df$hs))/prod(dim(df)[1]),2),
+                     round(sum(is.na(df$pt))/prod(dim(df)[1]),2),
+                     round(sum(is.na(df$surv))/prod(dim(df)[1]),2),
+                     round(sum(is.na(df$eo))/prod(dim(df)[1]),2),
+                     round(sum(is.na(df$age))/prod(dim(df)[1]),2),
+                     round(sum(is.na(df$gender))/prod(dim(df)[1]),2),
+                     round(sum(is.na(df$news))/prod(dim(df)[1]),2),
+                     round(sum(is.na(df$pid))/prod(dim(df)[1]),2),
+                     round(sum(is.na(df$polef))/prod(dim(df)[1]),2),
+                     round(sum(is.na(df$trust))/prod(dim(df)[1]),2)))
 
+# Change missing values in variables where missings are <10% to mean
+df <- df %>%
+  select(-age_group) %>%
+  mutate(eo = tidyr::replace_na(eo, round(mean(df$eo, na.rm=T),0)),
+         age = tidyr::replace_na(age, mean(df$age, na.rm=T)),
+         gender = tidyr::replace_na(gender, "Male"),
+         pid = tidyr::replace_na(pid, "Democrat"))
+
+#save data
+write_csv(df, "../../data/intermediate/cleaned_US.csv")         
