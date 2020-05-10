@@ -2,7 +2,7 @@ Prepare Data of US MTurk Sample
 ================
 
 - DESCRIPTION: Clean and construct measures according to PAP (pp. 3--8)
-- CREATES: [Cleaned Data for US Sample](../../data/intermediate/cleaned_us.csv)
+- CREATES: [Cleaned Data for US Sample](../../data/intermediate/cleaned_US.csv)
 -  DEPENDS: [Raw Data from MTurk](../../data/raw-private-encrypted/US_MTURK.csv)
 
 Content
