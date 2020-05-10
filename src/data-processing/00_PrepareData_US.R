@@ -177,28 +177,30 @@ tibble(values = round(table(df$algo_app)/dim(df)[1],2),
   ggplot(aes(x = algo_app, y = values)) +
   geom_col(fill = "gray85", colour = "black") +
   theme_classic() + 
-  theme(plot.title = element_text(hjust = 0.5)) +
+  theme(plot.title = element_text(hjust = 0.5),
+        plot.subtitle = element_text(hjust = 0.5)) +
   scale_y_continuous(labels = scales::percent) +
-  labs(x = "", y="", title = "Dependent Variable: Algorithmic Appreciation") 
+  labs(x = "", y="", title = "Dependent Variable: Algorithmic Appreciation",
+       subtitle = "Mean: 2.15, Standard Deviation: 1.38")
 ggsave("../../report/figures/Distributions_DV_US.png", width=8, height=4, dpi=900)
 
 
 ##  Independent Variables
 rbind(tibble(freq = round(table(df$hs)/dim(df)[1],2),
              values = 1:7,
-             id = "Habit Strength"), 
+             id = "Habit Strength \n Mean: 4.78, Standard Deviation: 1.94"), 
       tibble(freq = round(table(df$surv)/dim(df)[1],2),
              values = 1:7,
-             id = "Surveillance"),
+             id = "Surveillance \n Mean: 5, Standard Deviation: 1.24"),
       tibble(freq = round(table(df$esc)/dim(df)[1],2),
              values = 1:7,
-             id = "Escapism"),
+             id = "Escapism \n Mean: 4.08, Standard Deviation: 1.57"),
       tibble(freq = round(table(df$pt)/dim(df)[1],2),
              values = 1:7,
-             id = "Passing Time"),
+             id = "Passing Time \n Mean: 4.30, Standard Deviation: 1.59"),
       tibble(freq = round(table(df$ent)/dim(df)[1],2),
              values = 1:7,
-             id = "Entertainment")) %>%
+             id = "Entertainment \n Mean: 4.37, Standard Deviation: 1.64")) %>%
   ggplot(aes(x = values, y = freq)) +
   geom_col(fill = "gray85", colour = "black") +
   theme_classic() + 
@@ -215,38 +217,49 @@ tibble(values = round(table(df$eo)/dim(df)[1],2),
   ggplot(aes(x = eo, y = values)) +
   geom_bar(stat = "identity", fill = "gray85", colour = "black") +
   theme_classic() + 
-  theme(plot.title = element_text(hjust = 0.5)) +
+  theme(plot.title = element_text(hjust = 0.5),
+        plot.subtitle = element_text(hjust = 0.5)) +
   scale_y_continuous(labels = scales::percent) +
   scale_x_continuous(breaks = -6:7) +
-  labs(x = "", y="", title = "Moderator: Epistemic Overconfidence") 
+  labs(x = "", y="", title = "Moderator: Epistemic Overconfidence",
+       subtitle = "Mean: 2.46, Standard Deviation: 2.28") 
 ggsave("../../report/figures/Distributions_Moderator_US.png", width=8, height=4, dpi=900)
 
-
 # Controls
+df <- df%>%
+  mutate(age_group = ifelse(age > 21 & age < 30, "20's",
+                     ifelse(age > 29 & age < 40, "30's",
+                     ifelse(age > 39 & age < 50, "40's",
+                     ifelse(age > 49 & age < 60, "50's",
+                     ifelse(age > 59 & age < 70, "60's",
+                     ifelse(age > 69 & age < 80, "70's", NA)))))))
+         
 rbind(tibble(freq = round(table(df$trust)/dim(df)[1],2),
              values = 1:7,
-             id = "Trust in Media"), 
+             id = "Trust in Media \n Mean: 4.91, Standard Deviation: 1.10"), 
       tibble(freq = round(table(df$news)/dim(df)[1],2),
              values = 0:7,
-             id = "News Usage"),
+             id = "News Usage \n Mean: 4.42, Standard Deviation: 1.56"),
       tibble(freq = round(table(df$polef)/dim(df)[1],2),
              values = 1:7,
-             id = "Political Efficacy"),
+             id = "Political Efficacy \n Mean: 5.02, Standard Deviation: 1.11"),
       tibble(freq = round(table(df$pid)/dim(df)[1],2),
              values = levels(df$pid),
-             id = "Party ID"),
+             id = "Party ID \n Median: Democrat"),
       tibble(freq = round(table(df$gender)/dim(df)[1],2),
              values = levels(df$gender),
-             id = "Gender"),
-      tibble(freq = round(table(df$age)/dim(df)[1],2),
-             values = c(22:54, 56:62,64:65,67:69,71,73,74),
-             id = "Age")) %>%
+             id = "Gender \n Median: Male"),
+      tibble(freq = round(table(df$age_group)/dim(df)[1],2),
+             values = c("20's", "30's", "40's", "50's", "60's", "70's"),
+             id = "Age \n Mean: 38.74, Standard Deviation: 12.33")) %>%
   ggplot(aes(x = values, y = freq)) +
   facet_wrap(~ id, ncol = 3, scales = "free") +
   geom_col(fill = "gray85", colour = "black") +
   theme_classic() + 
   theme(plot.title = element_text(hjust = 0.5)) +
-  #scale_y_continuous(labels = scales::percent) +
+  scale_y_continuous(labels = scales::percent) +
   #scale_x_continuous(breaks = 1:7) +
   labs(x = "", y="", title = "Independent Variable: Gratifications of the News") 
-ggsave("../../report/figures/Distributions_IV_US.png", width=8, height=6, dpi=900)
+ggsave("../../report/figures/Distributions_Controls_US.png", width=10, height=6, dpi=900)
+
+
