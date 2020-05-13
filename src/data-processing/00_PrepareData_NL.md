@@ -339,7 +339,6 @@ Control Variables
 - Trust in Media
 - News Usage
 - Political Efficacy
-- Party ID
 - Gender
 - Age
 
