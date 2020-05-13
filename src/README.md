@@ -5,5 +5,5 @@ This folder should contain the scripts that:
 	- [US Sample](data-processing/00_PrepareData_US.md)
 	- [Dutch Sample](data-processing/00_PrepareData_NL.md)
 - Conduct the actual analyses
-	- [US Sample](src/analysis/01_Analysis_US.md)
-	- [Dutch Sample](src/analysis/01_Analysis_NL.md)
+	- [US Sample](analysis/01_Analysis_US.md)
+	- [Dutch Sample](analysis/01_Analysis_NL.md)
