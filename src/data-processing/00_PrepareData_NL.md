@@ -85,11 +85,11 @@ tibble(Scale = c("Habit Strengt", "Surveillance", "Escapism","Passing Time", "En
 
 |  Scale		 | Chi Square |	Fit 		  | PA		|
 |-------------------- | :-------------:  | :--------------: | :---------------: |
-| Habit Strengt 	| 24.2	     | 0.911 		  | 0.876		|
+| Habit Strength	| 24.2	     | 0.911 		  | 0.876		|
 | Surveillance	| 37.7	     | 0.951 	  | 0.920 		|
 | Escapism	| 12.0	     | 0.941 	  | 0.915		|
 | Passing Time	| 13.6 	     | 0.938 	  | 0.908		|
-| Entertainment	| 0.000107     | 0.961 	  | 0.859		|
+| Entertainment	| 00.0	     | 0.961 	  | 0.859		|
 
 - Variables created with an additive scale:
 	- News Consumption
