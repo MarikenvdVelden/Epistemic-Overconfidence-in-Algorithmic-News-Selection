@@ -29,7 +29,7 @@ source("src/lib/functions.R")
 Data
 ====
 -  Requires access to the csv file prepared by PollFish. 
--  [Cleaned data](../../data/intermediate/cleaned_NL.csv) and [codings](src/data-processing) are saved to public folders. 
+-  [Cleaned data](../../data/intermediate/cleaned_NL.csv) and [codings](00_PrepareData_NL.R) are saved to public folders. 
 
 
 ``` r
