@@ -7,7 +7,7 @@ Testing Hypothesis 1 and 2 using the Dutch PollFish Sample
     -   [Hypothesis 1](#hypothesis-1)
     -   [Hypothesis 2](#hypothesis-2)
     	- [Coefficient Plots](#coefficient-plots)
-	- [Predicted Effects](#predicted-effects)
+		- [Predicted Effects](#predicted-effects)
 
 Setup
 =====
