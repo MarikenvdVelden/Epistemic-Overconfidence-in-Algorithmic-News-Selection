@@ -29,7 +29,7 @@ source("src/lib/functions.R")
 Data
 ====
 -  Requires access to the csv file prepared by MTurk. 
--  [Cleaned data](../../data/intermediate/cleaned_US.csv) and [codings](src/data-processing/00_PrepareData_US.R) are saved to public folders. 
+-  [Cleaned data](../../data/intermediate/cleaned_US.csv) and [codings](00_PrepareData_US.R) are saved to public folders. 
 
 
 ``` r
