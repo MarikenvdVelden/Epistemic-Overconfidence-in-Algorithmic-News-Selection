@@ -84,7 +84,7 @@ tibble(Scale = c("Habit Strengt", "Surveillance", "Escapism","Passing Time", "En
 ```
 
 |  Scale		 | Chi Square |	Fit 		  | PA		|
-|-------------------- | --------------- | ---------------- | ----------------- |
+|-------------------- | :-------------:  | :--------------: | :---------------: |
 | Habit Strengt 	| 24.2	     | 0.911 		  | 0.876		|
 | Surveillance	| 37.7	     | 0.951 	  | 0.920 		|
 | Escapism	| 12.0	     | 0.941 	  | 0.915		|
