@@ -1,0 +1,662 @@
+---
+title: 'Prepare Data'
+author: "Felicia Loecherbach & Mariken A.C.G. van der Velden"
+output: 
+  github_document:
+    toc: yes
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+library(printr)
+library(rmarkdown)
+```
+
+# Scripts
+- [Required Packages &amp; Reproducibility](#required-packages-&amp;-reproducibility)
+- [Tidy Data](#tidy-data)
+  - [Scalability of Variables](#scalability-of-variables)
+  - [Data Wrangling](#data-wrangling)
+  - [Check Missing Values](#check-missing-values)
+- [Save Data for Analysis](#save-data-for-analysis)
+- [Visualization of Data](#visualization-of-data)
+  - [Dependent Variable](#dependent-variable)
+  - [Independent Variable](#independent-variable)
+  - [Control Variables](#control-variables)
+  - [Correlations Matrix](#correlations-matrix)
+
+## Required Packages &amp; Reproducibility
+```{r, message=FALSE, warning=F}
+rm(list=ls())
+
+renv::snapshot()
+
+source("../lib/functions.R")
+```
+
+## Tidy Data
+Load data from the U.S. and the Netherlands.
+```{r}
+nl <- read_csv("../../data/raw-private-encrypted/POLLFISH.csv")
+us <- qualtrics("../../data/raw-private-encrypted/US_MTURK.csv") %>%
+  mutate(Q1_1 = rename2(Q1_1),
+         Q1_2 = rename2(Q1_2),
+         Q1_3 = rename2(Q1_3),
+         Q1_4 = rename2(Q1_4),
+         Q1_5 = rename2(Q1_5),
+         Q1_6 = rename2(Q1_6),
+         Q1_7 = rename2(Q1_7),
+         Q1_8 = rename2(Q1_8),
+         Q1_9 = rename2(Q1_9),
+         Q1_10 = rename2(Q1_10),
+         Q1_11 = rename2(Q1_11),
+         Q1_12 = rename2(Q1_12),
+         Q1_13 = rename2(Q1_13),
+         Q1_14 = rename2(Q1_14),
+         Q1_15 = rename2(Q1_15),
+         Q1_16 = rename2(Q1_16),
+         Q1_17 = rename2(Q1_17),
+         Q1_18 = rename2(Q1_18),
+         Q1_19 = rename2(Q1_19),
+         Q1_20 = rename2(Q1_20),
+         Q1_21 = rename2(Q1_21),
+         Q1_22 = rename2(Q1_22),
+         Q1_23 = rename2(Q1_23),
+         Q20_1 = rename1(Q20_1),
+         Q20_2 = rename1(Q20_2),
+         Q20_3 = rename1(Q20_3),
+         Q20_4 = rename1(Q20_4),
+         Q20_5 = rename1(Q20_5),
+         Q23_1 = rename2(Q23_1),
+         Q23_2 = rename2(Q23_2),
+         Q23_3 = rename2(Q23_3),
+         Q23_4 = rename2(Q23_4),
+         Q23_5 = rename2(Q23_5),
+         Q23_6 = rename2(Q23_6),
+         Q23_7 = rename2(Q23_7),
+         Q23_8 = rename2(Q23_8),
+         Q23_9 = rename2(Q23_9),
+         Q23_1.1 = rename2(Q23_1.1),
+         Q23_2.1 = rename2(Q23_2.1),
+         Q23_3.1 = rename2(Q23_3.1))
+```
+
+### Scalability of Variables
+The dependent variable under study -- i.e. the dimensions of the Uses and Gratifications Theory ( _Habit Strength_ `hs`, _Surveillance_ `surv`, _Escapism_ `esc`, _Passing Time_ `pt`, and _Entertainment_ `ent`) -- as well as the control variables _news consumtion_ `news`, _trust in media_ `trust`, _political efficacy_ `polef` are latent constructs. 
+We first check the scalability of the items that together make up these variables. 
+
+```{r}
+hs_nl <- nl %>%
+  select(ugt_1:ugt_4) %>%
+  drop_na() %>%
+  psych::fa(rotate="varimax", fm="pa", scores="Bartlett")
+
+hs_us <- us %>%
+  select(Q1_1:Q1_4) %>%
+  drop_na() %>%
+  psych::fa(rotate="varimax", fm="pa", scores="Bartlett")
+
+surv_nl <- nl %>%
+  select(ugt_5:ugt_11) %>%
+  drop_na() %>%
+  psych::fa(rotate="varimax", fm="pa", scores="Bartlett")
+  
+surv_us <- us %>%
+  select(Q1_5:Q1_11) %>%
+  drop_na() %>%
+  psych::fa(rotate="varimax", fm="pa", scores="Bartlett")
+
+esc_nl <- nl %>%
+  select(ugt_12:ugt_16) %>%
+  drop_na() %>%
+  psych::fa(rotate="varimax", fm="pa", scores="Bartlett")
+
+esc_us <- us %>%
+  select(Q1_12:Q1_16) %>%
+  drop_na() %>%
+  psych::fa(rotate="varimax", fm="pa", scores="Bartlett")
+
+pt_nl <- nl %>%
+  select(ugt_17:ugt_21) %>%
+  drop_na() %>%
+  psych::fa(rotate="varimax", fm="pa", scores="Bartlett")
+
+pt_us <- us %>%
+  select(Q1_17:Q1_21) %>%
+  drop_na() %>%
+  psych::fa(rotate="varimax", fm="pa", scores="Bartlett")
+
+ent_nl <- nl %>%
+  select(ugt_22:ugt_23) %>%
+  drop_na() %>%
+  psych::fa(rotate="varimax", fm="pa", scores="Bartlett")
+
+ent_us <- us %>%
+  select(Q1_22:Q1_23) %>%
+  drop_na() %>%
+  psych::fa(rotate="varimax", fm="pa", scores="Bartlett")
+
+tibble(Country = c(rep("U.S.A.", 5), rep("Netherlands", 5)),
+       Scale = rep(c("Habit Strengt", "Surveillance", "Escapism","Passing Time",
+                     "Entertainment"), 2),
+       `Chi Square` = c(hs_us[3]$chi, surv_us[3]$chi, esc_us[3]$chi, pt_us[3]$chi,
+                        ent_us[3]$chi, hs_nl[3]$chi, surv_nl[3]$chi, esc_nl[3]$chi,
+                        pt_nl[3]$chi, ent_nl[3]$chi),
+       Fit = c(hs_us[10]$fit, surv_us[10]$fit, esc_us[10]$fit, pt_us[10]$fit,
+               ent_us[10]$fit, hs_nl[10]$fit, surv_nl[10]$fit,
+               esc_nl[10]$fit, pt_nl[10]$fit, ent_nl[10]$fit),
+       PA = c(hs_us[29]$R2, surv_us[29]$R2, esc_us[29]$R2, pt_us[29]$R2,
+               ent_us[27]$R2, hs_nl[29]$R2, surv_nl[29]$R2,
+               esc_nl[29]$R2, pt_nl[29]$R2, ent_nl[27]$R2))
+
+rm(hs_us, surv_us, esc_us, pt_us, ent_us, hs_nl, surv_nl, esc_nl, pt_nl, ent_nl)
+```
+
+### Data Wrangling
+Recode variables and merge US and NL data.
+
+```{r}
+news_nl <- nl %>%
+  select(mediagebruik_1:mediagebruik_9) %>%
+  drop_na() %>%
+  psy::cronbach()
+
+news_us <- us %>%
+  select(Q20_1:Q20_5) %>%
+  drop_na() %>%
+  psy::cronbach()
+
+trust_nl <- nl %>%
+  select(trust_media_1:trust_media_9) %>%
+  drop_na() %>%
+  psy::cronbach()
+
+trust_us <- us %>%
+  select(Q23_1:Q23_9) %>%
+  drop_na() %>%
+  psy::cronbach()
+
+polef_nl <- nl %>%
+  select(pol_efficacy_1:pol_efficacy_5) %>%
+  drop_na() %>%
+  psy::cronbach()
+
+polef_us <- us %>%
+  select(Q23_1.1:Q23_3.1) %>%
+  drop_na() %>%
+  psy::cronbach()
+
+tibble(Country = c(rep("U.S.A.", 3), rep("Netherlands", 3)),
+       Scale = rep(c("News Usage", "Trust in Media", "Political Efficacy"),2),
+       `Cronbach's Alpha` = c(news_us[3]$alpha, trust_us[3]$alpha, polef_us[3]$alpha,
+                              news_nl[3]$alpha, trust_nl[3]$alpha, polef_nl[3]$alpha))
+
+rm(news_us, trust_us, polef_us, news_nl, trust_nl, polef_nl)
+```
+
+```{r}
+nl <-  nl %>%
+  mutate(news = round((mediagebruik_1 + mediagebruik_2 + mediagebruik_3 +
+                         mediagebruik_4 + mediagebruik_5 + mediagebruik_6 +
+                         mediagebruik_7 + mediagebruik_8 +
+                        mediagebruik_9)/9, digits = 0),
+         hs = round((ugt_1 + ugt_2 + ugt_3 + ugt_4)/4, digits = 0),
+         surv = round((ugt_5 + ugt_6 + ugt_7 + ugt_8  + ugt_9  + ugt_10 + 
+                         ugt_11)/7, digits = 0),
+         esc = round((ugt_12 + ugt_13 + ugt_14 + ugt_15 + ugt_16)/5, digits = 0),
+         pt = round((ugt_17 + ugt_18 + ugt_19 + ugt_20 + ugt_21)/5, digits = 0),
+         ent = round((ugt_22 + ugt_23)/2, digits = 0),
+         algo_app = (rename3(alg_app1_1) + rename3(alg_app2_1) +
+                       rename3(alg_app3_1) + rename3(alg_app4_1)),
+         trust = round((trust_media_1 + trust_media_2  + trust_media_3 + 
+                          trust_media_4 + trust_media_5 + trust_media_6 +
+                          trust_media_7 + trust_media_8 + 
+                        trust_media_9)/9,digits = 0),
+         polef = round((pol_efficacy_1 + pol_efficacy_2 + pol_efficacy_5)/3, 
+                       digits = 0),
+         DK1 = str_to_lower(DK1, locale = "nl"),
+         DK1 = ifelse(DK1 == "2", 1,
+               ifelse(DK1 == "2e", 1,
+               ifelse(DK1 == "2de", 1,
+               ifelse(DK1 == "2de plaats", 1,
+               ifelse(DK1 == "2e plaats",1,
+               ifelse(DK1 == "de tweede", 1,
+               ifelse(DK1 == "de tweede plaats", 1,
+               ifelse(DK1 == "in de tweede plaats", 1,
+               ifelse(DK1 == "op de tweede plaats", 1,
+               ifelse(DK1 == "plek 2", 1,
+               ifelse(DK1 == "tweede", 1, 0))))))))))),
+         DK2 = ifelse(DK2 == "8", 1,
+               ifelse(DK2 == "8 schapen", 1,
+               ifelse(DK2 == "8 schapwn", 1,
+               ifelse(DK2 == "Acht", 1, 0)))),
+         DK3 = str_to_lower(DK3),
+         DK3 = ifelse(DK3 == "emily", 1,
+               ifelse(DK3 == "emilu", 1,
+               ifelse(DK3 == "emily's", 1,
+               ifelse(DK3 == "emily s", 1, 0)))),
+         DK4 = str_to_lower(DK4),
+         DK4 = ifelse(DK4 == "0", 1,
+               ifelse(DK4 == "0 als het een gat is waar geen vuil in zit", 1,
+               ifelse(DK4 == "een gat is leeg", 1,
+               ifelse(DK4 == "gat is leeg, dus geen vuil", 1,
+               ifelse(DK4 == "geen vuil, want het is een gat", 1,
+               ifelse(DK4 == "geen, want het is een gat", 1, 
+               ifelse(DK4 == "nee", 1,
+               ifelse(DK4 == "niets", 1,
+               ifelse(DK4 == "nul", 1, 0))))))))),     
+         DK5 = ifelse(DK5 == ".05", 1,
+               ifelse(DK5 == "£0,05", 1,
+               ifelse(DK5 == "€0,05", 1,
+               ifelse(DK5 == "€0.05", 1,
+               ifelse(DK5 == "0,05", 1,
+               ifelse(DK5 == " 0,05 aangezien ik de koers van euro 1,10 naar dollar niet weet kan ik dit niet met zekerheid zeggen", 1, 
+               ifelse(DK5 == "0,05 dollar", 1,
+               ifelse(DK5 == "0,05 eurocent", 1,
+               ifelse(DK5 == "0.05", 1,
+               ifelse(DK5 == "5 cent", 1,
+               ifelse(DK5 == "5 dollar cent", 1,
+               ifelse(DK5 == "Ik ken de wisselkoers van Euro naar Dollar en vice versa op het moment niet. Maar er vanuit gaande dat er maar met een soort valuta mag worden gerekend dan kost de bal: 5 cent.",1,
+                      0)))))))))))),
+         DK6 = str_to_lower(DK6),
+         DK6 = ifelse(DK6 == "5 min", 1,
+               ifelse(DK6 == "5 min.", 1,
+               ifelse(DK6 == "5 minuten", 1,
+               ifelse(DK6=="5min", 1,
+               ifelse(DK6=="5minuten", 1,
+               ifelse(DK6=="vijf", 1, 0)))))),
+         DK7 = str_to_lower(DK7),
+         DK7 = str_replace(DK7, "47", "1"),
+         DK7 = ifelse(DK7 == "1", 1, 0),
+         correct = (DK1 + DK2 + DK3 + DK4 + DK5 + DK6 + DK7),
+         eo = Overconfidence - correct,
+         gender = recode(Gender, `0` = "Male", `1` = "Female", `99` = "Other"),
+         gender = na_if(gender, "Other"),
+         gender = factor(gender, levels = c("Female", "Male")),
+         age = Age,
+         age = na_if(age, "812"),
+         age = na_if(age, "a"),         
+         age = na_if(age, "asd"),
+         age = na_if(age, "Dbn"),
+         age = na_if(age, "eg"),
+         age = na_if(age, "Gcc"),
+         age = na_if(age, "i"),
+         age = na_if(age, "Ja"),
+         age = na_if(age, "nee"),
+         age = na_if(age, "yes"),
+         age = na_if(age, "Zek"),
+         age = as.numeric(age),
+         ResponseId = V1,
+         country = "Netherlands",
+         pid = "None"
+         ) %>%
+  select(ResponseId, country, news, hs, surv, esc, pt, ent, 
+         algo_app, trust, polef, eo, gender, age, pid) %>%
+  filter(age >17)
+
+us <-  us %>%
+  mutate(news = round((Q20_1 + Q20_2 + Q20_3 + Q20_4 + Q20_5)/5, digits = 0),
+         hs = round((Q1_1 + Q1_2 + Q1_3 + Q1_4)/4, digits = 0),
+         surv = round((Q1_5 + Q1_6 + Q1_7 + Q1_8 + Q1_9 + Q1_10 +
+                         Q1_11)/7, digits = 0),
+         esc = round((Q1_12 + Q1_13 + Q1_14 + Q1_15 + Q1_16)/5, digits = 0),
+         pt = round((Q1_17 + Q1_18 + Q1_19 + Q1_20 + Q1_21)/5, digits = 0),
+         ent = round((Q1_22 + Q1_23)/2, digits = 0),
+         algo_app = (rename3(Q3_1) + rename3(Q4_1) + rename3(Q6_1) +
+                       rename3(Q8_1)),
+         trust = round((Q23_1 + Q23_2 + Q23_3 + Q23_4 + Q23_5 + Q23_6 + Q23_7 +
+                          Q23_8 + Q23_9)/9, digits = 0),
+         polef = round((Q23_1.1 + Q23_2.1 + Q23_3.1)/3, digits = 0),
+         Q11 = str_to_lower(Q11, locale = "en"),
+         Q11 = ifelse(Q11 == "second", 1,
+               ifelse(Q11 == "second place", 1,
+               ifelse(Q11 == "2", 1,
+               ifelse(Q11 == "2nd", 1,
+               ifelse(Q11 == "second place. if you guessed first place, the person in first place is still there.",
+                       1, 0))))),
+         Q12 = ifelse(Q12 == "8", 1, 0),
+         Q14 = str_to_lower(Q14),
+         Q14 = ifelse(Q14 == "emily", 1,
+               ifelse(Q14 == "emily april may", 1, 0)),
+         Q15 = str_to_lower(Q15),
+         Q15 = ifelse(Q15 == "0", 1,
+               ifelse(Q15 == "0 cubic feet", 1,
+               ifelse(Q15 == "none", 1,
+               ifelse(Q15 == "zero", 1,
+               ifelse(Q15 == "there is no dirt in a hole", 1,
+               ifelse(Q15 == "there's no dirt in a hole", 1, 0)))))),     
+         Q16 = ifelse(Q16 == ".05", 1,
+               ifelse(Q16 == "$0.05", 1,
+               ifelse(Q16 == "0.05", 1,
+               ifelse(Q16 == "05", 1,
+               ifelse(Q16 == "5", 1,
+               ifelse(Q16 == "5 cents", 1, 0)))))),
+         Q17 = str_to_lower(Q17),
+         Q17 = str_replace(Q17, "5", "1"),
+         Q17 = ifelse(Q17 == "1", 1, 0),
+         Q18 = str_to_lower(Q18),
+         Q18 = str_replace(Q18, "47", "1"),
+         Q18 = ifelse(Q18 == "1", 1, 0),
+         correct = (Q11 + Q12 + Q14 + Q15 + Q16 + Q17 + Q18),
+         eo = Q19 - correct,
+         pid = Q31,
+         pid = recode(Q31, "Independent"= "Other", "Something Else" = "Other"),
+         pid = factor(pid, levels = c("Other", "Democrat", "Republican")),
+         gender = Q37,
+         gender = recode(Q37, "Transgender Female" = "Female"),
+         gender = na_if(gender, "Prefer not to answer"),
+         gender = factor(gender, levels = c("Female", "Male")),
+         age = (2019 - Q39),
+         country = "United States"
+         ) %>%
+  select(ResponseId, country, news, hs, surv, esc, pt, ent, 
+         algo_app, trust, polef, eo, pid, gender, age)
+
+df <- nl %>%
+  add_row(us)
+rm(nl, us)
+```
+
+### Check Missing Values
+
+We employ the following criteria: 
+
+- If 10\% or less of the values on the dimension are missing, then we re-code the missing values to the overall mean. 
+- If 11\% or more of the values on the dimension are missing, then we re-code the missing values to a constant (for instance 0) and include a dummy variable indicating whether the response on the covariate was missing or not.
+
+```{r}
+df %>%
+  group_by(country) %>%
+  summarise(`Algorithmic Appreciation` = round(sum(is.na(algo_app))/n(),2),
+            `UGT: Entertainment` = round(sum(is.na(ent))/n(),2),
+            `UGT: Escapism` = round(sum(is.na(esc))/n(),2),
+            `UGT: Habit Strength` = round(sum(is.na(hs))/n(),2),
+            `UGT: Passing Time` = round(sum(is.na(pt))/n(),2),
+            `UGT: Surveillance` = round(sum(is.na(surv))/n(),2),
+            `Epistemic Overconfidence` = round(sum(is.na(eo))/n(),2),
+            `Age` = round(sum(is.na(age))/n(),2),
+            `Gender` = round(sum(is.na(gender))/n(),2),
+            `Party ID` = round(sum(is.na(pid))/n(),2),
+            `News Usage` = round(sum(is.na(news))/n(),2),
+            `Political Efficacy` = round(sum(is.na(polef))/n(),2),
+            `Trust in Media` = round(sum(is.na(trust))/n(),2)) %>%
+  pivot_longer(cols = `Algorithmic Appreciation`:`Trust in Media`,
+              names_to = "Variables", values_to = "% Missing Values")
+  
+```
+
+For the Dutch data, we recode the missing values of the variables `UGT: Entertainment`, `UGT: Escapism`, `UGT: Habit Strength`, `UGT: Passing Time`, `UGT: Surveillance`, and `Gender` to the mean value of the respective variables.
+For the variable `Epistemic Overconfidence` we additionally add a dummy variable indicating whether this variable was missing.
+For the U.S. data, we recode the missing values of the variables `Epistemic Overconfidence`, `Party ID`,`Gender`, and `Age` to the mean value of the respective variables.
+
+```{r}
+means <- df %>%
+  group_by(country) %>%
+  summarise(ent = mean(ent, na.rm = T),
+            esc = mean(esc, na.rm = T),
+            hs = mean(hs, na.rm = T),
+            pt = mean(pt, na.rm = T),
+            surv = mean(surv, na.rm = T),
+            eo = mean(eo, na.rm = T),
+            age = mean(age, na.rm = T),
+            gender = max(names(table(gender))),
+            pid = max(names(table(pid))))
+
+df <- df %>%
+  mutate(ent = ifelse(country == "Netherlands" & is.na(ent), means$ent[1], ent),
+         esc = ifelse(country == "Netherlands" & is.na(esc), means$esc[1], esc),
+         hs = ifelse(country == "Netherlands" & is.na(hs), means$hs[1], hs),
+         pt = ifelse(country == "Netherlands" & is.na(pt), means$pt[1], pt),
+         surv = ifelse(country == "Netherlands" & is.na(surv), means$surv[1],
+                       surv),
+         gender = as.character(gender),
+         gender = ifelse(country == "Netherlands" & is.na(gender), 
+                         means$gender[1], gender),
+         gender = ifelse(country == "United States" & is.na(gender),
+                         means$gender[2], gender),
+         missing_eo = ifelse(country == "Netherlands" & is.na(eo), 1, 0),
+         eo = ifelse(country == "Netherlands" & is.na(eo), means$eo[1], eo),
+         eo = ifelse(country == "United States" & is.na(eo), means$eo[2], eo),
+         pid = ifelse(country=="United States"  & is.na(pid), means$pid[2], pid),
+         age = ifelse(country=="United States" & is.na(age), means$age[2], age)
+         )
+rm(means)
+```
+
+## Save Data for Analysis
+```{r}
+save(df, file = "../../data/intermediate/cleaned_data.RData")
+```
+
+## Visualization of Data
+
+
+### Dependent Variable
+
+```{r, echo=F,fig.width=10, fig.height=10}
+df %>%
+  select(algo_app, country) %>%
+  mutate(algo_app = round(algo_app,0)) %>%
+  group_by(algo_app, country) %>%
+  summarise(n = n()) %>%
+  mutate(perc = ifelse(country=="Netherlands", round(n/384,2), round(n/268,2))) %>%
+  ggplot(mapping = aes(x = algo_app, y = perc, fill = country)) +
+  geom_col(alpha = .8, position = position_dodge()) +
+  labs(y = "", x = "", title = "Dependent Variable: Algorithmic Appreciation",
+       subtitle = "Mean: 1.92, Standard Deviation: 1.43") +
+  theme_minimal() +
+  scale_y_continuous(labels=percent) +
+  scale_fill_viridis(option = "magma", discrete = T) +
+  theme(plot.title = element_text(hjust = 0.5),
+        plot.subtitle = element_text(hjust = 0.5),
+        #axis.text.x = element_text(angle=45),
+        legend.position="bottom",
+        legend.title = element_blank()) 
+```
+
+### Independent Variable
+```{r, echo=F,fig.width=10, fig.height=10}
+esc <- df %>%
+  select(esc, country) %>%
+  mutate(esc = round(esc),0) %>%
+  group_by(country, esc) %>%
+  summarise(n = n()) %>%
+  ungroup() %>%
+  mutate(id = "Escapism \n Mean: 3.59, Standard Deviation: 1.65") %>%
+  select(country, var = esc, n, id)
+  
+ent <- df %>%
+  select(ent, country) %>%
+  mutate(ent = round(ent,0)) %>%
+  group_by(country, ent) %>%
+  summarise(n = n()) %>%
+  ungroup() %>%
+  mutate(id = "Entertainment \n Mean: 3.91, Standard Deviation: 1.73") %>%
+  select(country, var = ent, n, id)
+
+pt <- df %>%
+  select(pt, country) %>%
+  mutate(pt = round(pt, 0)) %>%
+  group_by(country, pt) %>%
+  summarise(n = n()) %>%
+  ungroup() %>%
+  mutate(id = "Passing Time \n Mean: 3.83, Standard Deviation: 1.65") %>%
+  select(country, var = pt, n, id)
+
+hs <- df %>%
+  select(hs, country) %>%
+  mutate(hs = round(hs),0) %>%
+  group_by(country, hs) %>%
+  summarise(n = n()) %>%
+  ungroup() %>%
+  mutate(id = "Habith Strength \n Mean: 4.31, Standard Deviation: 1.60") %>%
+  select(country, var = hs, n, id)
+
+surv <- df %>%
+  select(surv, country) %>%
+  mutate(surv = round(surv),0) %>%
+  group_by(country, surv) %>%
+  summarise(n = n()) %>%
+  ungroup() %>%
+  mutate(id = "Surveillance \n Mean: 4.78, Standard Deviation: 1.37") %>%
+  select(country, var = surv, n, id)
+
+ent %>%
+  add_row(esc) %>%
+  add_row(hs) %>%
+  add_row(pt) %>%
+  add_row(surv) %>%
+  mutate(perc = ifelse(country=="Netherlands", round(n/384,2), round(n/268,2))) %>%
+  ggplot(mapping = aes(x = var, y = perc, fill = country)) +
+  geom_col(alpha = .8, position = position_dodge()) +
+  facet_wrap(.~id, ncol = 2) +
+  labs(y = "", x = "", 
+       title = "Independent Variable: Gratifications of the News") +
+  theme_minimal() +
+  scale_y_continuous(labels=percent) +
+  scale_fill_viridis(option = "magma", discrete = T) +
+  theme(plot.title = element_text(hjust = 0.5),
+        #plot.subtitle = element_text(hjust = 0.5),
+        #axis.text.x = element_text(angle=45),
+        legend.position="bottom",
+        legend.title = element_blank()) 
+rm(ent, esc, hs, pt, surv)
+```
+
+### Moderator
+
+```{r, echo=F,fig.width=10, fig.height=10}
+df %>%
+  select(eo, country) %>%
+  mutate(eo = round(eo,0)) %>%
+  group_by(eo, country) %>%
+  summarise(n = n()) %>%
+  mutate(perc = ifelse(country=="Netherlands", round(n/384,2), round(n/268,2))) %>%
+  ggplot(mapping = aes(x = eo, y = perc, fill = country)) +
+  geom_col(alpha = .8, position = position_dodge()) +
+  labs(y = "", x = "", title = "Moderator: Epistemic Overconfidence",
+       subtitle = "Mean: 2.48, Standard Deviation: 1.96") +
+  theme_minimal() +
+  scale_y_continuous(labels=percent) +
+  scale_fill_viridis(option = "magma", discrete = T) +
+  theme(plot.title = element_text(hjust = 0.5),
+        plot.subtitle = element_text(hjust = 0.5),
+        legend.position="bottom",
+        legend.title = element_blank()) 
+```
+
+### Control Variables
+
+```{r, echo=F,fig.width=10, fig.height=10}
+news <- df %>%
+  select(news, country) %>%
+  mutate(news = round(news),0) %>%
+  group_by(country, news) %>%
+  summarise(n = n()) %>%
+  ungroup() %>%
+  mutate(id = "News Usage \n Mean: 3.79, Standard Deviation: 1.63",
+         news = as.character(news)) %>%
+  select(country, var = news, n, id)
+  
+trust <- df %>%
+  select(trust, country) %>%
+  mutate(trust = round(trust,0)) %>%
+  group_by(country, trust) %>%
+  summarise(n = n()) %>%
+  ungroup() %>%
+  mutate(id = "Trust in Media \n Mean: 4.54, Standard Deviation: 1.13",
+         trust = as.character(trust)) %>%
+  select(country, var = trust, n, id)
+
+polef <- df %>%
+  select(polef, country) %>%
+  mutate(polef = round(polef, 0)) %>%
+  group_by(country, polef) %>%
+  summarise(n = n()) %>%
+  ungroup() %>%
+  mutate(id = "Political Efficacy \n Mean: 4.41, Standard Deviation: 1.28",
+         polef = as.character(polef)) %>%
+  select(country, var = polef, n, id)
+
+age <- df %>%
+  select(age, country) %>%
+  mutate(age_group = ifelse(age > 21 & age < 30, "20's",
+                     ifelse(age > 29 & age < 40, "30's",
+                     ifelse(age > 39 & age < 50, "40's",
+                     ifelse(age > 49 & age < 60, "50's",
+                     ifelse(age > 59 & age < 70, "60's",
+                     ifelse(age > 69 & age < 80, "70's", NA))))))) %>%
+  group_by(country, age_group) %>%
+  summarise(n = n()) %>%
+  ungroup() %>%
+  mutate(id = "Age \n Mean: 34.69, Standard Deviation: 12.59") %>%
+  select(country, var = age_group, n, id)
+
+gender <- df %>%
+  group_by(country, gender) %>%
+  summarise(n = n()) %>%
+  ungroup() %>%
+  mutate(id = "Gender \n Median: Male") %>%
+  select(country, var = gender, n, id)
+
+pid <- df %>%
+  filter(country == "United States") %>%
+  group_by(country, pid) %>%
+  summarise(n = n()) %>%
+  ungroup() %>%
+  mutate(id = "Party ID (U.S. only) \n Median: Democrat") %>%
+  select(country, var = pid, n, id)
+
+news %>%
+  add_row(trust) %>%
+  add_row(polef) %>%
+  add_row(age) %>%
+  add_row(gender) %>%
+  add_row(pid) %>%
+  drop_na() %>%
+  mutate(perc = ifelse(country=="Netherlands", round(n/384,2), round(n/268,2))) %>%
+  ggplot(mapping = aes(x = var, y = perc, fill = country)) +
+  geom_col(alpha = .8, position = position_dodge()) +
+  facet_wrap(.~id, ncol = 2, scales = "free") +
+  labs(y = "", x = "", 
+       title = "Control Variables") +
+  theme_minimal() +
+  scale_y_continuous(labels=percent) +
+  scale_fill_viridis(option = "magma", discrete = T) +
+  theme(plot.title = element_text(hjust = 0.5),
+        #plot.subtitle = element_text(hjust = 0.5),
+        #axis.text.x = element_text(angle=45),
+        legend.position="bottom",
+        legend.title = element_blank()) 
+rm(news, trust, polef, age, gender,pid)
+```
+
+
+### Correlations Matrix
+```{r, echo=F, fig.width=15, fig.height=15}
+df %>%
+  mutate(gender = recode(gender, `Female`= 1, `Male` = 0),
+         pid = recode(pid, `None` = 0, `Democrat` = 1, `Republican` = 2,
+                      `Other` = 3)) %>%
+  select(`Algorithmic Appreciation` = algo_app,
+         `UGT: Entertainment` = ent,
+         `UGT: Escapism`  = esc,
+         `UGT: Habit Strength`  = hs,
+         `UGT: Passing Time`  = pt,
+         `UGT: Surveillance`  = surv,
+         `Epistemic Overconfidence`  = eo,
+         `Age`  = age,
+         `Gender`  = gender,
+         `News Usage`  = news,
+         `Party ID`  = pid,
+         `Political Efficacy`  = polef,
+         `Trust in Media`  = trust) %>%
+  ggcorrmat(
+  type = "robust", # correlation method
+  cor.vars = c(everything()), # a range of variables can be selected
+  colors = c("#000004FF", "#B63679FF", "#FCFDBFFF"),
+  title = "Correlalogram for Variables under Study"
+)
+```

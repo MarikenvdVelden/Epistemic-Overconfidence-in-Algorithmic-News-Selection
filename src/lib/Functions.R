@@ -1,6 +1,6 @@
 library(tidyverse)
-library(sjPlot)
-library(sjmisc)
+library(scales)
+library(viridis)
 library(psy)
 library(psych)
 library(ggstatsplot)
