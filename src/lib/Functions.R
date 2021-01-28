@@ -7,6 +7,7 @@ library(ggstatsplot)
 library(broom)
 library(tidybayes)
 library(brms)
+library(ggeffects)
 library(easyGgplot2)
 
 qualtrics <- function(df){

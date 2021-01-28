@@ -1,0 +1,231 @@
+---
+title: 'Prepare Data'
+author: "Felicia Loecherbach & Mariken A.C.G. van der Velden"
+output: 
+  github_document:
+    toc: yes
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+library(printr)
+library(rmarkdown)
+```
+
+# Scripts
+- [Required Packages &amp; Reproducibility](#required-packages-&amp;-reproducibility)
+- [Load Data](#load-data)
+- [Analysis](#analysis)
+  - [H1: Direct Effect of UGT on Algorithmic Appreciation](#h1:-direct-effect-of-ugt-on-algorithmic-appreciation)
+  - [H2: Interaction UGT * Epistemic Overconfidence](#h2:-interaction-ugt-*-epistemic-overconfidence)
+  - [Marginal Effects](#marginal-effects)
+
+## Required Packages &amp; Reproducibility
+```{r, message=FALSE, warning=F}
+rm(list=ls())
+
+renv::snapshot()
+
+source("../lib/functions.R")
+```
+
+## Load Data
+```{r}
+load("../../data/intermediate/cleaned_data.RData") 
+df <- df %>%
+  mutate(esc = round(esc, 0),
+         ent = round(ent, 0),
+         hs = round(hs, 0),
+         pt = round(pt, 0),
+         surv = round(surv, 0))
+#  pid = factor(pid, levels = c("None", "Other", "Democrat",
+#                                      "Republican")))
+```
+
+## Analysis
+
+### H1: Direct Effect of UGT on Algorithmic Appreciation
+```{r}
+#df <- within(df, pid <- relevel(pid, ref = "Other"))
+H1 <- lm(algo_app ~ esc + ent + hs + pt + surv +
+           eo + factor(missing_eo) + news + polef + trust +
+           age + factor(gender) + factor(country),  data = df)
+```
+
+```{r, echo=F}
+H1  %>%
+  broom::tidy() %>%
+  filter(term != "(Intercept)") %>%
+  mutate(variable =  c("UGT: Escapism",
+                       "UGT: Entertainment", 
+                       "UGT: Habit Strenght",
+                       "UGT: Passing Time", 
+                       "UGT: Surveillance", 
+                       "Epistemic Overconfidence",
+                       "Epistemic Overconfidence: Missing Values", 
+                       "News Usage", "Political Efficacy", "Trust in Media",
+                        "Age","Gender: Male",
+                       "Country: US")) %>%
+  select(-term) %>%
+  ggplot(aes(y = variable)) +
+  stat_dist_halfeyeh(aes(dist = "student_t", arg1 = df.residual(H1), 
+                         arg2 = estimate, arg3 = std.error))  +
+  labs(x = "", y = "") +
+  geom_vline(xintercept = 0, size = .5) +
+  theme_bw() +
+  ggtitle("DV: Algorithmic Appreciation") +
+  theme(plot.title = element_text(hjust = 0.5))
+rm(H1)
+```
+
+### H2: Interaction UGT * Epistemic Overconfidence
+
+```{r}
+#H2 Interaction Effect Epistemic Overconfidence
+H2_1 <-  lm(algo_app ~ esc *eo + ent + hs + pt + surv +
+            missing_eo + news + polef + trust + age +
+            factor(gender) + factor(country),  data = df)
+
+H2_2 <-  lm(algo_app ~ esc + ent*eo + hs + pt + surv +
+              factor(missing_eo) + news + polef + trust + age +
+              factor(gender) + factor(country),  data = df)
+
+H2_3 <-  lm(algo_app ~ esc + ent + hs*eo + pt + surv +
+              factor(missing_eo) + news + polef + trust +
+              age + factor(gender) + factor(country),  data = df)
+
+H2_4 <-  lm(algo_app ~ esc + ent + hs + pt*eo + surv +
+              factor(missing_eo) + news + polef + trust + 
+              age + factor(gender) + factor(country),  data = df)
+
+H2_5 <-  lm(algo_app ~ esc + ent + hs + pt + surv*eo +
+              factor(missing_eo) + news + polef + trust + age +
+              factor(gender) + factor(country),  data = df)
+```
+
+```{r, echo=F, fig.width=10, fig.height=10}
+f2_1 <- H2_1  %>%
+  broom::tidy() %>%
+  filter(term != "(Intercept)") %>%
+  mutate(variable =  c("UGT: Escapism",
+                       "Epistemic Overconfidence", 
+                       "UGT: Entertainment", 
+                       "UGT: Habit Strenght", 
+                       "UGT: Passing Time", "UGT: Surveillance", 
+                       "Epistemic Overconfidence: Missing Values", 
+                       "News Usage", "Political Efficacy", "Trust in Media",
+                       "Age","Gender: Male", "Country: US",
+                       "Interaction"),
+         id = rep("Escapism * Epistemic Overconfidence", 14)) %>%
+  select(-term)
+
+f2_2 <- H2_2  %>%
+  broom::tidy() %>%
+  filter(term != "(Intercept)") %>%
+  mutate(variable =  c("UGT: Escapism",
+                       "UGT: Entertainment",
+                       "Epistemic Overconfidence", 
+                       "UGT: Habit Strenght", 
+                       "UGT: Passing Time", "UGT: Surveillance", 
+                       "Epistemic Overconfidence: Missing Values", 
+                       "News Usage", "Political Efficacy", "Trust in Media",
+                       "Age","Gender: Male", "Country: US",
+                       "Interaction"),
+         id = rep("Entertainment * Epistemic Overconfidence", 14)) %>%
+  select(-term)
+
+f2_3 <- H2_3  %>%
+  broom::tidy() %>%
+  filter(term != "(Intercept)") %>%
+  mutate(variable =  c("UGT: Escapism",
+                       "UGT: Entertainment", 
+                       "UGT: Habit Strenght", 
+                       "Epistemic Overconfidence",
+                       "UGT: Passing Time", "UGT: Surveillance", 
+                       "Epistemic Overconfidence: Missing Values", 
+                       "News Usage", "Political Efficacy", "Trust in Media",
+                       "Age","Gender: Male", "Country: US",
+                       "Interaction"),
+         id = rep("Habit Strength * Epistemic Overconfidence", 14)) %>%
+  select(-term)
+
+f2_4 <- H2_4  %>%
+  broom::tidy() %>%
+  filter(term != "(Intercept)") %>%
+  mutate(variable =  c("UGT: Escapism",
+                       "UGT: Entertainment", 
+                       "UGT: Habit Strenght", 
+                       "UGT: Passing Time",
+                       "Epistemic Overconfidence","UGT: Surveillance", 
+                       "Epistemic Overconfidence: Missing Values", 
+                       "News Usage", "Political Efficacy", "Trust in Media",
+                       "Age","Gender: Male", "Country: US",
+                       "Interaction"),
+         id = rep("Passing Time * Epistemic Overconfidence", 14)) %>%
+  select(-term)
+
+f2_5 <- H2_5  %>%
+  broom::tidy() %>%
+  filter(term != "(Intercept)") %>%
+  mutate(variable =  c("UGT: Escapism",
+                       "UGT: Entertainment", 
+                       "UGT: Habit Strenght", 
+                       "UGT: Passing Time","UGT: Surveillance", 
+                       "Epistemic Overconfidence",
+                       "Epistemic Overconfidence: Missing Values", 
+                       "News Usage", "Political Efficacy", "Trust in Media",
+                       "Age","Gender: Male", "Country: US",
+                       "Interaction"),
+         id = rep("Surveillance * Epistemic Overconfidence", 14)) %>%
+  select(-term)
+
+rbind(f2_1, f2_2, f2_3, f2_4, f2_5) %>%
+  ggplot(aes(y = variable)) +
+  facet_wrap(~ id, ncol = 2, scales = "free") +
+  stat_dist_halfeyeh(aes(dist = "student_t", arg1 = df.residual(H2_1), 
+                         arg2 = estimate, arg3 = std.error))  +
+  labs(x = "", y = "") +
+  geom_vline(xintercept = 0, size = .5) +
+  theme_classic() +
+  ggtitle("DV: Algorithmic Appreciation") +
+  theme(plot.title = element_text(hjust = 0.5))
+rm(f2_1, f2_2, f2_3, f2_4, f2_5)
+```
+
+### Marginal Effects
+```{r, echo=FALSE,fig.width=10, fig.height=10}
+mg1 <- ggpredict(H2_1, terms = c("esc[1:7]", "eo[-4:7]")) %>%
+  mutate(id = "Escapism")
+mg2 <- ggpredict(H2_2, terms = c("ent[1:7]", "eo[-4:7]")) %>%
+  mutate(id = "Entertainment")
+mg3 <- ggpredict(H2_3, terms = c("hs[1:7]", "eo[-4:7]")) %>%
+  mutate(id = "Habit Strength")
+mg4 <- ggpredict(H2_4, terms = c("pt[1:7]", "eo[-4:7]")) %>%
+  mutate(id = "Passing Time")
+mg5 <- ggpredict(H2_5, terms = c("surv[1:7]", "eo[-4:7]")) %>%
+  mutate(id = "Surveillance")
+
+rbind(mg1, mg2, mg3, mg4, mg5) %>%
+  filter(group!=-3, group!=-2, group!=-1, group!=1,
+         group!=2, group!=3, group!=4, group!=5, group!=6) %>%
+  mutate(group = recode(group, 
+                        `-4` = "Insecure",
+                        `0` = "Not Overconfident",
+                        `7` = "Overconfident")) %>%
+  ggplot(aes(x = x, y = predicted, colour = group)) +
+  geom_line() +
+  geom_ribbon(aes(ymin=conf.low, ymax=conf.high, fill = group), alpha=0.15) +
+  labs(x = "Levels of Gratifications of the News", 
+       y = "Predicted Effects on DV for Levels of Overconfidence",
+       title = "DV: Algorithmic Appreciation") +
+  facet_wrap(.~id, ncol = 2, scales = "free") +
+  theme_minimal() +
+  scale_fill_viridis(option = "magma", discrete = T) +
+  scale_color_viridis(option = "magma", discrete = T) +
+  theme(plot.title = element_text(hjust = 0.5),
+        plot.subtitle = element_text(hjust = 0.5),
+        legend.position="bottom",
+        legend.title = element_blank())
+```

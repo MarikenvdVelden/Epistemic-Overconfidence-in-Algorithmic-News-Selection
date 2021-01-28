@@ -435,7 +435,7 @@ save(df, file = "../../data/intermediate/cleaned_data.RData")
 
 ### Dependent Variable
 
-```{r, echo=F,fig.width=10, fig.height=10}
+```{r, echo=F,fig.width=3, fig.height=3}
 df %>%
   select(algo_app, country) %>%
   mutate(algo_app = round(algo_app,0)) %>%
@@ -527,7 +527,7 @@ rm(ent, esc, hs, pt, surv)
 
 ### Moderator
 
-```{r, echo=F,fig.width=10, fig.height=10}
+```{r, echo=F,fig.width=3, fig.height=3}
 df %>%
   select(eo, country) %>%
   mutate(eo = round(eo,0)) %>%
