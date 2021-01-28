@@ -34,3 +34,15 @@ rename3 <- function(variable){
   variable <- as.numeric(variable)
   return(variable)
 }
+
+rename4 <- function(variable){
+  variable <- ifelse(variable == 4, 1, 0)
+  variable <- as.numeric(variable)
+  return(variable)
+}
+
+rename5 <- function(variable){
+  variable <- ifelse(variable == 1, 1, 0)
+  variable <- as.numeric(variable)
+  return(variable)
+}

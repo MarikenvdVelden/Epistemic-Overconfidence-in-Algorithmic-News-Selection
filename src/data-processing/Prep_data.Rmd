@@ -209,6 +209,10 @@ nl <-  nl %>%
          ent = round((ugt_22 + ugt_23)/2, digits = 0),
          algo_app = (rename3(alg_app1_1) + rename3(alg_app2_1) +
                        rename3(alg_app3_1) + rename3(alg_app4_1)),
+         own_select = (rename4(alg_app1_1) + rename4(alg_app2_1) +
+                       rename4(alg_app3_1) + rename4(alg_app4_1)),
+         jou_select = (rename5(alg_app1_1) + rename5(alg_app2_1) +
+                       rename5(alg_app3_1) + rename5(alg_app4_1)),
          trust = round((trust_media_1 + trust_media_2  + trust_media_3 + 
                           trust_media_4 + trust_media_5 + trust_media_6 +
                           trust_media_7 + trust_media_8 + 
@@ -292,7 +296,7 @@ nl <-  nl %>%
          pid = "None"
          ) %>%
   select(ResponseId, country, news, hs, surv, esc, pt, ent, 
-         algo_app, trust, polef, eo, gender, age, pid) %>%
+         algo_app, own_select, jou_select, trust, polef, eo, gender, age, pid) %>%
   filter(age >17)
 
 us <-  us %>%
@@ -305,6 +309,10 @@ us <-  us %>%
          ent = round((Q1_22 + Q1_23)/2, digits = 0),
          algo_app = (rename3(Q3_1) + rename3(Q4_1) + rename3(Q6_1) +
                        rename3(Q8_1)),
+         own_select = (rename4(Q3_1) + rename4(Q4_1) +
+                       rename4(Q6_1) + rename4(Q8_1)),
+         jou_select = (rename5(Q3_1) + rename5(Q4_1) +
+                       rename5(Q6_1) + rename5(Q8_1)),
          trust = round((Q23_1 + Q23_2 + Q23_3 + Q23_4 + Q23_5 + Q23_6 + Q23_7 +
                           Q23_8 + Q23_9)/9, digits = 0),
          polef = round((Q23_1.1 + Q23_2.1 + Q23_3.1)/3, digits = 0),
@@ -351,7 +359,7 @@ us <-  us %>%
          country = "United States"
          ) %>%
   select(ResponseId, country, news, hs, surv, esc, pt, ent, 
-         algo_app, trust, polef, eo, pid, gender, age)
+         algo_app, own_select, jou_select, trust, polef, eo, pid, gender, age)
 
 df <- nl %>%
   add_row(us)
