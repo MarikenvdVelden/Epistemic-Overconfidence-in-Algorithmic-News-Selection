@@ -1,6 +1,6 @@
-Prepare Data
+Prepare Data for Epistemic Overconfidence in Algorithmic News Selection
+Paper
 ================
-Felicia Loecherbach & Mariken A.C.G. van der Velden
 
 # Scripts
 

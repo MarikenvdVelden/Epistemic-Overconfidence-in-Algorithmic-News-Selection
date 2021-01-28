@@ -1,6 +1,5 @@
 ---
-title: 'Prepare Data'
-author: "Felicia Loecherbach & Mariken A.C.G. van der Velden"
+title: 'Analysis for Epistemic Overconfidence in Algorithmic News Selection Paper'
 output: 
   github_document:
     toc: yes
@@ -20,7 +19,7 @@ library(rmarkdown)
 - [Analysis](#analysis)
   - [H1: Direct Effect of UGT on Algorithmic Appreciation](#h1:-direct-effect-of-ugt-on-algorithmic-appreciation)
   - [H2: Interaction UGT * Epistemic Overconfidence](#h2:-interaction-ugt-*-epistemic-overconfidence)
-  - [Marginal Effects](#marginal-effects)
+  - [Predicted Effects](#predicted-effects)
 
 ## Required Packages &amp; Reproducibility
 ```{r, message=FALSE, warning=F}
@@ -74,7 +73,7 @@ H1  %>%
                          arg2 = estimate, arg3 = std.error))  +
   labs(x = "", y = "") +
   geom_vline(xintercept = 0, size = .5) +
-  theme_bw() +
+  theme_minimal() +
   ggtitle("DV: Algorithmic Appreciation") +
   theme(plot.title = element_text(hjust = 0.5))
 rm(H1)
@@ -188,32 +187,30 @@ rbind(f2_1, f2_2, f2_3, f2_4, f2_5) %>%
                          arg2 = estimate, arg3 = std.error))  +
   labs(x = "", y = "") +
   geom_vline(xintercept = 0, size = .5) +
-  theme_classic() +
+  theme_minimal() +
   ggtitle("DV: Algorithmic Appreciation") +
   theme(plot.title = element_text(hjust = 0.5))
 rm(f2_1, f2_2, f2_3, f2_4, f2_5)
 ```
 
-### Marginal Effects
+### Predicted Effects
 ```{r, echo=FALSE,fig.width=10, fig.height=10}
-mg1 <- ggpredict(H2_1, terms = c("esc[1:7]", "eo[-4:7]")) %>%
+mg1 <- ggpredict(H2_1, terms = c("esc[1:7]", "eo[-1, 2,4]")) %>%
   mutate(id = "Escapism")
-mg2 <- ggpredict(H2_2, terms = c("ent[1:7]", "eo[-4:7]")) %>%
+mg2 <- ggpredict(H2_2, terms = c("ent[1:7]", "eo[-1, 2,4]")) %>%
   mutate(id = "Entertainment")
-mg3 <- ggpredict(H2_3, terms = c("hs[1:7]", "eo[-4:7]")) %>%
+mg3 <- ggpredict(H2_3, terms = c("hs[1:7]", "eo[-1, 2,4]")) %>%
   mutate(id = "Habit Strength")
-mg4 <- ggpredict(H2_4, terms = c("pt[1:7]", "eo[-4:7]")) %>%
+mg4 <- ggpredict(H2_4, terms = c("pt[1:7]", "eo[-1, 2,4]")) %>%
   mutate(id = "Passing Time")
-mg5 <- ggpredict(H2_5, terms = c("surv[1:7]", "eo[-4:7]")) %>%
+mg5 <- ggpredict(H2_5, terms = c("surv[1:7]", "eo[-1, 2,4]")) %>%
   mutate(id = "Surveillance")
 
 rbind(mg1, mg2, mg3, mg4, mg5) %>%
-  filter(group!=-3, group!=-2, group!=-1, group!=1,
-         group!=2, group!=3, group!=4, group!=5, group!=6) %>%
   mutate(group = recode(group, 
-                        `-4` = "Insecure",
-                        `0` = "Not Overconfident",
-                        `7` = "Overconfident")) %>%
+                        `-1` = "Insecure",
+                        `2` = "Not Overconfident",
+                        `4` = "Overconfident")) %>%
   ggplot(aes(x = x, y = predicted, colour = group)) +
   geom_line() +
   geom_ribbon(aes(ymin=conf.low, ymax=conf.high, fill = group), alpha=0.15) +

@@ -1,6 +1,6 @@
-Prepare Data
+Analysis for Epistemic Overconfidence in Algorithmic News Selection
+Paper
 ================
-Felicia Loecherbach & Mariken A.C.G. van der Velden
 
 # Scripts
 
@@ -12,7 +12,7 @@ Felicia Loecherbach & Mariken A.C.G. van der Velden
         Appreciation](#h1:-direct-effect-of-ugt-on-algorithmic-appreciation)
       - [H2: Interaction UGT \* Epistemic
         Overconfidence](#h2:-interaction-ugt-*-epistemic-overconfidence)
-      - [Marginal Effects](#marginal-effects)
+      - [Predicted Effects](#predicted-effects)
 
 ## Required Packages & Reproducibility
 
@@ -82,6 +82,6 @@ H2_5 <-  lm(algo_app ~ esc + ent + hs + pt + surv*eo +
 
 ![](analysis_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
 
-### Marginal Effects
+### Predicted Effects
 
 ![](analysis_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
