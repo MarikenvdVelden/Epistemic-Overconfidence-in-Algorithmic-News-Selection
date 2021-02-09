@@ -76,6 +76,7 @@ df %>%
 H1 <- lm(algo_app ~ esc + ent + hs + pt + surv +
            eo + factor(missing_eo) + news + polef + trust +
            age + factor(gender) + factor(country),  data = df)
+
 ```
 
 ```{r, echo=F}
@@ -126,6 +127,19 @@ H2_4 <-  lm(algo_app ~ esc + ent + hs + pt*eo + surv +
 H2_5 <-  lm(algo_app ~ esc + ent + hs + pt + surv*eo +
               factor(missing_eo) + news + polef + trust + age +
               factor(gender) + factor(country),  data = df)
+
+#stargazer::stargazer(H1, H2_1, H2_2, H2_3, H2_4, H2_5,
+#                     type = "latex", title="Results", align=TRUE,
+#                     star.char = c("+", "*", "**", "***"),
+#                     star.cutoff = c(.1, .05, .01, .001),
+#                     dep.var.labels = c("Algorithmic Appreciation"),  
+#          covariate.labels = c("UGT: Escapism", "UGT: Entertainment", 
+#                               "UGT: Habit Strength", "UGT: Passing Time", 
+#                               "UGT: Surveillance", "Epistemic Overconfidence (EO)",
+#                               "Missing Values: EO", "News Usage", 
+#                               "Political Efficacy", "Trust in Media",
+#                               "Age", "Gender: Male", "Country: US", 
+#                               "Interaction UGT * EO"))
 ```
 
 ```{r, echo=F, fig.width=10, fig.height=10}
@@ -334,6 +348,19 @@ Ht2 <- lm(jou_select ~ esc + ent + hs + pt + surv +
 Ht3 <- lm(trust ~ own_select + jou_select + eo +
           factor(missing_eo) + news + polef + age + 
           factor(gender) + factor(country),  data = df)
+
+#stargazer::stargazer(Ht1, Ht2, Ht3,
+#                     type = "latex", title="Results", align=TRUE,
+#                     star.char = c("+", "*", "**", "***"),
+#                     star.cutoff = c(.1, .05, .01, .001),
+#                     dep.var.labels = c("Self-Selection", "Journalist Select", 
+#                                        "Trust in Media"),  
+#          covariate.labels = c("UGT: Escapism", "UGT: Entertainment", 
+#                               "UGT: Habit Strength", "UGT: Passing Time", 
+#                               "UGT: Surveillance", "Epistemic Overconfidence (EO)",
+#                               "Missing Values: EO", "News Usage", 
+#                               "Political Efficacy", "Trust in Media",
+#                               "Age", "Gender: Male", "Country: US"))
 ```
 
 ```{r, echo=F}
@@ -423,6 +450,19 @@ Hj4 <-  lm(jou_select ~ esc + ent + hs + pt*eo + surv +
 Hj5 <-  lm(jou_select ~ esc + ent + hs + pt + surv*eo +
               factor(missing_eo) + news + polef + trust + age +
               factor(gender) + factor(country),  data = df)
+
+#stargazer::stargazer(Hj1, Hj2, Hj3, Hj4, Hj5,
+#                     type = "latex", title="Results", align=TRUE,
+#                     star.char = c("+", "*", "**", "***"),
+#                     star.cutoff = c(.1, .05, .01, .001),
+#                     dep.var.labels = c("Appreciation for Journalists Selectors"),  
+#          covariate.labels = c("UGT: Escapism", "UGT: Entertainment", 
+#                               "UGT: Habit Strength", "UGT: Passing Time", 
+#                               "UGT: Surveillance", "Epistemic Overconfidence (EO)",
+#                               "Missing Values: EO", "News Usage", 
+#                               "Political Efficacy", "Trust in Media",
+#                               "Age", "Gender: Male", "Country: US", 
+#                               "Interaction UGT * EO"))
 ```
 
 ```{r, echo=F, fig.width=10, fig.height=10}
@@ -572,6 +612,19 @@ Hs4 <-  lm(own_select ~ esc + ent + hs + pt*eo + surv +
 Hs5 <-  lm(own_select ~ esc + ent + hs + pt + surv*eo +
               factor(missing_eo) + news + polef + trust + age +
               factor(gender) + factor(country),  data = df)
+
+#stargazer::stargazer(Hs1, Hs2, Hs3, Hs4, Hs5,
+#                     type = "latex", title="Results", align=TRUE,
+#                     star.char = c("+", "*", "**", "***"),
+#                     star.cutoff = c(.1, .05, .01, .001),
+#                     dep.var.labels = c("Appreciation for Self-Selection"),  
+#          covariate.labels = c("UGT: Escapism", "UGT: Entertainment", 
+#                               "UGT: Habit Strength", "UGT: Passing Time", 
+#                               "UGT: Surveillance", "Epistemic Overconfidence (EO)",
+#                               "Missing Values: EO", "News Usage", 
+#                               "Political Efficacy", "Trust in Media",
+#                               "Age", "Gender: Male", "Country: US", 
+#                               "Interaction UGT * EO"))
 ```
 
 ```{r, echo=F, fig.width=10, fig.height=10}

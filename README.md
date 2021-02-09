@@ -4,11 +4,14 @@ Data &amp; Analysis Compendium for the Epistemic Overconfidence in Algorithmic N
 # Data
 The following data files might be of interest:
 
-* [US Samle](data/intermediate/cleaned_US.csv) Cleaned data with constructed scales for analysis of the US MTurk sample in which we test whether people have more algorithmic appreciation when consuming news to pass time, entertain oneself or escape from daily worries than when using news to keep up-to-date with politics (_hypotheses 1_) and. whether people are confident in their own cognitive abilities moderates that relationship (_hypothesis 2_).
-* [Dutch Sample](data/intermediate/cleaned_NL.csv) Cleaned data with constructed scales for analysis of the Dutch PollFish sample in which we test whether people have more algorithmic appreciation when consuming news to pass time, entertain oneself or escape from daily worries than when using news to keep up-to-date with politics (_hypotheses 1_) and. whether people are confident in their own cognitive abilities moderates that relationship (_hypothesis 2_).
+* [Cleaned data](data/intermediate/cleaned_data.RData) Cleaned data with constructed scales for analysis of the US MTurk sample and the Dutch Pollfish sample. We use this data to test whether people have more algorithmic appreciation when consuming news to pass time, entertain oneself or escape from daily worries than when using news to keep up-to-date with politics (_hypotheses 1_) and. whether people are confident in their own cognitive abilities moderates that relationship (_hypothesis 2_). In addition, we use the data to conduct exploratory analyses as reported in the paper.
 
-See the scripts in [src/data-processing](src/README.md) for details on how these files were constructed.
+See the script in [src/data-processing/Prep_data](src/data-processing/Prep_data.md) for details on how these files were constructed.
 
 # Results
-* [US Sample](src/analysis/01_Analysis_US.md)
-* [Dutch Sample](src/analysis/01_Analysis_NL.md)
+* [Conducted analyses](src/analysis/analysis.md) Demonstrates the analyses to test and visualise _hypothesis 1_ and _hypothesis 2_. In addition, we report the exploratory results for:
+
+	- the role of gender in _hypothesis 2_;
+	- the relationship between Appreciation for News Selector and Trust in Media;
+	- the relationship between Appreciation for Journalists as News Selectors and Overconfidence
+	- the relationship between Appreciation for Self Selecting the News and Overconfidence
